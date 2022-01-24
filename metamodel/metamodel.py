@@ -51,8 +51,8 @@ class metamodel():
 
     @staticmethod
     def approx_gt(version: str, version_: str) -> bool:
-            tam = len(version_) - 1
-            return version >= version_ and version[tam] >= version_[tam]
+        tam = len(version_) - 1
+        return version >= version_ and version[tam] >= version_[tam]
 
     @staticmethod
     def get_constraints(parts: list[str]) -> dict[str, str]:
