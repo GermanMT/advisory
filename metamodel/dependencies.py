@@ -1,5 +1,4 @@
-import json
-import requests
+import json, requests
 
 
 class dependencies():
