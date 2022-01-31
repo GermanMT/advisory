@@ -41,29 +41,24 @@ class metamodel():
                 aux.extend(p_domain)
                 domains.append(And(aux))
 
-
-            # print(domains)
-
-            ''' Muestra y analiza todas las soluciones '''
+            ''' Muestra la cantidad de soluciones posibles '''
             self.all_smt(And(domains), vars_)
 
-            # for domain in domains:
-            #     print(domain)
-
-            #     ''' Consigue una única solución satisfacible para cada dominio '''
-            #     model = get_model(domain)
-            #     print(model)
 
     @staticmethod
     def all_smt(formula, keys: list[Symbol]) -> None:
+        i = 0
         target_logic = get_logic(formula)
-        print("Target Logic: %s" % target_logic)
         with Solver(logic=target_logic) as solver:
             solver.add_assertion(formula)
             while solver.solve():
                 partial_model = [EqualsOrIff(k, solver.get_value(k)) for k in keys]
-                print(partial_model)
+                i += 1
+                # print(i)
+                # print(partial_model)
                 solver.add_assertion(Not(And(partial_model)))
+
+        print(i)
 
     ''' Mejorar método para asignar a las versiones una combinación única'''
     @staticmethod
