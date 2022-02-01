@@ -1,2 +1,3 @@
 requests
 PySMT
+z3-solver
