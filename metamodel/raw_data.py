@@ -1,14 +1,12 @@
-from metamodel.dependencies import dependencies
+from metamodel.dependencies import Dependencies
 from metamodel.versions import get_versions
 
 from operator import eq, gt, lt, ge, le, ne
 
 
-class raw_data():
+class RawData():
 
     def __init__(self) -> None:
-        self.problems = {}
-        self.dependencies = dependencies('')
         self.ops = {
             '=': eq,
             '>': gt,
@@ -23,26 +21,21 @@ class raw_data():
     obtenido, y así construir el diccionario de dependencias asocidas a las distribuciones 
     aceptadas '''
     def get_data(self, file: str, nameWithOwner:str) -> dict[str, list[str]]:
-        self.dependencies.file_type = file
+        dependencies = Dependencies(file).get_dependencies(nameWithOwner)
 
-        # GermanMT/AMADEUS
-        # psf/requests
-        dependencies = self.dependencies.get_dependencies(nameWithOwner)
-
-        relationships = {}
+        data = {}
 
         for pkg_name in dependencies:
             if dependencies[pkg_name] == 'Any':
                 distributions = get_versions(pkg_name)
-                relationships[pkg_name] = distributions
+                data[pkg_name] = [distributions, None]
             else:
                 parts = dependencies[pkg_name].split(',')
                 constraints = self.get_constraints(parts)
-                self.problems[pkg_name] = constraints
                 distributions = self.get_distributions(pkg_name, constraints)
-                relationships[pkg_name] = distributions
+                data[pkg_name] = [distributions, constraints]
 
-        return relationships
+        return data
 
     @staticmethod
     def approx_gt(version: str, version_: str) -> bool:

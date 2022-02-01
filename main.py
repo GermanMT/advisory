@@ -1,5 +1,8 @@
-from metamodel.metamodel import metamodel
+from metamodel.metamodel import Metamodel
 
-metamodel = metamodel(['setup.py'], 'psf/requests')
+
+# GermanMT/AMADEUS
+# psf/requests
+metamodel = Metamodel(['setup.py'], 'psf/requests')
 
 metamodel.generate_metamodel()

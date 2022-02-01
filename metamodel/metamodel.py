@@ -1,92 +1,90 @@
-from metamodel.raw_data import raw_data
-
-from pysmt.shortcuts import  Equals, GT, LT, GE, LE, NotEquals, Symbol, And, Or, EqualsOrIff, Int, get_model, Solver, Not
-from pysmt.typing import INT
-from pysmt.oracles import get_logic
+from metamodel.raw_data import RawData
 
 
-class metamodel():
+class Feature():
+
+    def __init__(self, name, parent = None, relations = None):
+        self.name = name
+        self.parent = parent
+        self.relations = relations if relations else list()
+
+class Relationship():
+
+    def __init__(self, parent, childrens):
+        self.parent = parent
+        self.childrens = childrens
+
+class Constraint():
+    
+    def __init__(self, name, feature):
+        self.name = name
+        self.feature = feature
+
+class Metamodel():
 
     def __init__(self, files: list[str], nameWithOwner: str) -> None:
         self.files = files
         self.nameWithOwner = nameWithOwner
-        self.raw_data = raw_data()
-        self.ops = {
-            '=': Equals,
-            '>': GT,
-            '<': LT,
-            '>=': GE,
-            '<=': LE,
-            '!=': NotEquals,
-            '~>': GE
-            }
+        self.features = list()
+        self.relationships = list()
+        self.constraints = list()
 
     ''' Una vez obtengamos el dicionario con las dependencias asociadas a las distribuciones
     permitidas por el formato de la versión comenzaremos a construir el metamodelo'''
     def generate_metamodel(self) -> None:
-        for file in self.files:
-            raw_data = self.raw_data.get_data(file, self.nameWithOwner)
-            ''' Añadir variables y restricciones al smt '''
-            domains = []
-            vars_ = []
-            for variable in raw_data:
-                var = Symbol(variable, INT)
-                vars_.append(var)
+        data = RawData().get_data(self.files[0], self.nameWithOwner)
+        for pkg_name in data:
+            parent = self.add_feature(pkg_name)
+            childrens = list()
+            for children in data[pkg_name][0]:
+                childrens.append(self.add_feature(children))
 
-                if variable in self.raw_data.problems:
-                    p_domain = self.add_problems(var, self.raw_data.problems[variable])
-                v_domain = Or([Equals(var, Int(self.transform(version))) for version in raw_data[variable]])
-                
-                aux = [v_domain]
-                aux.extend(p_domain)
-                domains.append(And(aux))
+            self.add_relationship(parent, childrens)
 
-            ''' Muestra la cantidad de soluciones posibles '''
-            self.all_smt(And(domains), vars_)
+            if data[pkg_name][1]:
+                for constraints in data[pkg_name][1]:
+                    self.add_constraint(constraints + ' ' + data[pkg_name][1][constraints], parent)
 
 
-    @staticmethod
-    def all_smt(formula, keys: list[Symbol]) -> None:
+        print(self.__str__())
+
+    def add_feature(self, pkg_name):
+        feature = Feature(pkg_name)
+        self.features.append(feature)
+        return feature
+    
+    def add_relationship(self, parent, childrens):
+        relationship = Relationship(parent, childrens)
+        self.relationships.append(relationship)
+        return relationship
+
+    def add_constraint(self, name, feature):
+        constraint = Constraint(name, feature)
+        self.constraints.append(constraint)
+        return constraint
+
+    def __str__(self) -> str:
+        model_str = 'Features: \n'
         i = 0
-        target_logic = get_logic(formula)
-        with Solver(logic = target_logic, name = 'z3') as solver:
-            solver.add_assertion(formula)
-            while solver.solve():
-                partial_model = [EqualsOrIff(k, solver.get_value(k)) for k in keys]
-                i += 1
-                print(i)
-                # print(partial_model)
-                solver.add_assertion(Not(And(partial_model)))
+        for feat in self.features:
+            model_str += f'Feature{i}: {feat.name} \n'
+            i += 1
 
-        print(i)
+        model_str += '\n'
+            
+        model_str += 'Relationships: \n'
+        i = 0
+        for rel in self.relationships:
+            names = [child.name for child in rel.childrens]
+            model_str += f'Relationship{i}: {rel.parent.name} - {names} \n'
+            i += 1
 
-    ''' Mejorar método para asignar a las versiones una combinación única'''
-    @staticmethod
-    def transform(version: str) -> int:
-        ''' Si no está completa se añade un '.0.0' / '.0' al final de la version '''
-        dots = version.count('.')
-        if dots == 1:
-            version = version + '.0'
-        elif dots == 0:
-            version = version + '.0.0'
+        model_str += '\n'
 
-        l = [int(x, 10) for x in version.split('.') if x.isnumeric()]
-        l.reverse()
-        version = sum(x * (100 ** i) for i, x in enumerate(l))
-        return version
+        model_str += 'Constraints: \n'
+        i = 0
+        for const in self.constraints:
+            model_str += f'Constraint{i}: {const.feature.name} {const.name} \n'
+            i += 1
 
-    ''' Crea las restricciones para el modelo smt '''
-    def add_problems(self, var: Symbol, problems: dict[str, str]) -> list:
-        problems_ = []
-
-        for problem in problems:
-            if problem.__contains__('||'):
-                op = '!='
-                version_ = problems[problem]
-            else:
-                op = problem
-                version_ = problems[problem]
-            problem_ = self.ops[op](var, Int(self.transform(version_)))
-            problems_.append(problem_)
-
-        return problems_
+        return model_str

@@ -1,7 +1,7 @@
 import json, requests
 
 
-class dependencies():
+class Dependencies():
 
     def __init__(self, file_type: str) -> None:
         self.file_type = file_type
