@@ -3,10 +3,11 @@ from metamodel.raw_data import RawData
 
 class Feature():
 
-    def __init__(self, name, parent = None, relations = None):
+    def __init__(self, name, parent = None, relations = None, constraints = None):
         self.name = name
         self.parent = parent
         self.relations = relations if relations else list()
+        self.constraints = constraints if constraints else list()
 
 class Relationship():
 
@@ -16,8 +17,8 @@ class Relationship():
 
 class Constraint():
     
-    def __init__(self, name, feature):
-        self.name = name
+    def __init__(self, op, version, feature):
+        self.name = {op: version}
         self.feature = feature
 
 class Metamodel():
@@ -30,26 +31,29 @@ class Metamodel():
         self.constraints = list()
 
     ''' Una vez obtengamos el dicionario con las dependencias asociadas a las distribuciones
-    permitidas por el formato de la versión comenzaremos a construir el metamodelo'''
+    permitidas por las restricciones comenzaremos a construir el metamodelo '''
     def generate_metamodel(self) -> None:
         data = RawData().get_data(self.files[0], self.nameWithOwner)
         for pkg_name in data:
             parent = self.add_feature(pkg_name)
             childrens = list()
             for children in data[pkg_name][0]:
-                childrens.append(self.add_feature(children))
+                childrens.append(self.add_feature(children, parent))
 
-            self.add_relationship(parent, childrens)
+            relationship = self.add_relationship(parent, childrens)
+            parent.relations.append(relationship)
 
             if data[pkg_name][1]:
                 for constraints in data[pkg_name][1]:
-                    self.add_constraint(constraints + ' ' + data[pkg_name][1][constraints], parent)
+                    constraint = self.add_constraint(constraints, data[pkg_name][1][constraints], parent)
+                    parent.constraints.append(constraint)
 
 
         print(self.__str__())
+        return self
 
-    def add_feature(self, pkg_name):
-        feature = Feature(pkg_name)
+    def add_feature(self, pkg_name, parent = None):
+        feature = Feature(pkg_name, parent)
         self.features.append(feature)
         return feature
     
@@ -58,8 +62,8 @@ class Metamodel():
         self.relationships.append(relationship)
         return relationship
 
-    def add_constraint(self, name, feature):
-        constraint = Constraint(name, feature)
+    def add_constraint(self, op, version, feature):
+        constraint = Constraint(op, version, feature)
         self.constraints.append(constraint)
         return constraint
 

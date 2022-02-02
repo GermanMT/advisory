@@ -1,16 +1,16 @@
-from metamodel.raw_data import raw_data
+from metamodel.metamodel import Metamodel
 
 from pysmt.shortcuts import  Equals, GT, LT, GE, LE, NotEquals, Symbol, And, Or, EqualsOrIff, Int, get_model, Solver, Not
 from pysmt.typing import INT
 from pysmt.oracles import get_logic
 
 
-class metamodel():
+class PySMTModel():
 
-    def __init__(self, files: list[str], nameWithOwner: str) -> None:
-        self.files = files
-        self.nameWithOwner = nameWithOwner
-        self.raw_data = raw_data()
+    def __init__(self, metamodel: Metamodel) -> None:
+        self.metamodel = metamodel
+        self.domains = list()
+        self.vars = list()
         self.ops = {
             '=': Equals,
             '>': GT,
@@ -21,30 +21,33 @@ class metamodel():
             '~>': GE
             }
 
-    ''' Una vez obtengamos el dicionario con las dependencias asociadas a las distribuciones
-    permitidas por el formato de la versión comenzaremos a construir el metamodelo'''
-    def generate_metamodel(self) -> None:
-        for file in self.files:
-            raw_data = self.raw_data.get_data(file, self.nameWithOwner)
-            ''' Añadir variables y restricciones al smt '''
-            domains = []
-            vars_ = []
-            for variable in raw_data:
-                var = Symbol(variable, INT)
-                vars_.append(var)
+    ''' Con el metamodelo construido lo transformamos en un modelo PySMT '''
+    def generate_model(self) -> None:
+        dist_feats = filter(lambda feat: feat.parent is None, self.metamodel.features)
+        for feat in dist_feats:
+            var = Symbol(feat.name, INT)
+            self.vars.append(var)
+            ctc_names = {}
+            for ctc in feat.constraints:
+                ctc_names.update(ctc.name)
 
-                if variable in self.raw_data.problems:
-                    p_domain = self.add_problems(var, self.raw_data.problems[variable])
-                v_domain = Or([Equals(var, Int(self.transform(version))) for version in raw_data[variable]])
+            for rel in feat.relations:
+                if feat.constraints:
+                    p_domain = self.add_problems(var, ctc_names)
+                v_domain = Or([Equals(var, Int(self.transform(version.name))) for version in rel.childrens])
                 
                 aux = [v_domain]
                 aux.extend(p_domain)
-                domains.append(And(aux))
+                self.domains.append(And(aux))
 
-            ''' Muestra la cantidad de soluciones posibles '''
-            self.all_smt(And(domains), vars_)
+        print(self.domains)
+        return self.domains
+
+            # ''' Muestra la cantidad de soluciones posibles '''
+            # self.all_smt(And(domains), vars_)
 
 
+    ''' Mover a un fichero de operaciones '''
     @staticmethod
     def all_smt(formula, keys: list[Symbol]) -> None:
         i = 0
