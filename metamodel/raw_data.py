@@ -1,3 +1,4 @@
+from ctypes import sizeof
 from metamodel.dependencies import Dependencies
 from metamodel.versions import get_versions
 
@@ -39,8 +40,19 @@ class RawData():
 
     @staticmethod
     def approx_gt(version: str, version_: str) -> bool:
-        tam = len(version_) - 1
-        return version >= version_ and version[tam] >= version_[tam]
+        dots = version.count('.')
+        if dots == 2:
+            version += '.0'
+        elif dots == 1:
+            version += '.0.0'
+        elif dots == 0:
+            version += '.0.0.0'
+        
+        parts = version.split('.')
+        parts_ = version_.split('.')
+        tam_ = len(parts_) - 1
+
+        return version >= version_ and parts[tam_] >= parts_[tam_]
 
     @staticmethod
     def get_constraints(parts: list[str]) -> list[str]:

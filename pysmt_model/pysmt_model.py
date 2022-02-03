@@ -45,12 +45,14 @@ class PySMTModel():
     ''' Transforma las versiones en un entero '''
     @staticmethod
     def transform(version: str) -> int:
-        ''' Si no está completa se añade un '.0.0' / '.0' al final de la version '''
+        ''' Si no está completa se añade un '0.0.0' / '.0.0' / '.0' al final de la version '''
         dots = version.count('.')
-        if dots == 1:
-            version = version + '.0'
+        if dots == 2:
+            version += '.0'
+        elif dots == 1:
+            version += '.0.0'
         elif dots == 0:
-            version = version + '.0.0'
+            version += '.0.0.0'
 
         l = [int(x, 10) for x in version.split('.') if x.isnumeric()]
         l.reverse()

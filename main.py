@@ -17,7 +17,7 @@ Repositorio con ficheros de dependencias no contradictorios: GermanMT/prueba1
 begin = time.time()
 
 ''' Creamos el metamodelo sobre una serie de ficheros de un repositorio '''
-metamodel = Metamodel(['setup.py', 'requirements.txt'], 'GermanMT/prueba1')
+metamodel = Metamodel(['tensorflow/tools/pip_package/setup.py', 'tensorflow/tools/ci_build/release/requirements_common.txt'], 'tensorflow/tensorflow')
 
 metamodelo = metamodel.generate_metamodel()
 
@@ -34,5 +34,5 @@ print('\n')
 print('¿Es el modelo válido? \n')
 print(valid_model(modelo_smt.domains))
 
-print('¿Cuál es el número de productos del modelo? \n')
-print(number_of_products(modelo_smt.domains, modelo_smt.vars))
+# print('¿Cuál es el número de productos del modelo? \n')
+# print(number_of_products(modelo_smt.domains, modelo_smt.vars))
