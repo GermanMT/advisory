@@ -1,32 +1,31 @@
 from metamodel.raw_data import RawData
 
 
-class Feature():
+class Package():
 
-    def __init__(self, name, parent = None, relations = None, constraints = None):
+    def __init__(self, name, versions = None, constraints = None):
         self.name = name
-        self.parent = parent
-        self.relations = relations if relations else list()
+        self.relations = versions if versions else list()
         self.constraints = constraints if constraints else list()
 
 class Relationship():
 
-    def __init__(self, parent, childrens):
-        self.parent = parent
-        self.childrens = childrens
+    def __init__(self, package, versions):
+        self.package = package
+        self.versions = versions
 
 class Constraint():
     
-    def __init__(self, op, version, feature):
+    def __init__(self, op, version, package):
         self.name = {op: version}
-        self.feature = feature
+        self.package = package
 
 class Metamodel():
 
     def __init__(self, files: list[str], nameWithOwner: str) -> None:
         self.files = files
         self.nameWithOwner = nameWithOwner
-        self.features = list()
+        self.packages = list()
         self.relationships = list()
         self.constraints = list()
 
@@ -36,51 +35,49 @@ class Metamodel():
         for file in self.files:
             data = RawData().get_data(file, self.nameWithOwner)
             for pkg_name in data:
-                if pkg_name not in [feat.name for feat in self.features]:
-                    parent = self.add_feature(pkg_name)
+                if pkg_name not in [package.name for package in self.packages]:
+                    pkg = self.add_package(pkg_name)
                 else:
-                    parent = self.get_feature(pkg_name)
+                    pkg = self.get_package(pkg_name)
 
-                childrens = list()
-                for children in data[pkg_name][0]:
-                    childrens.append(self.add_feature(children, parent))
+                versions = data[pkg_name][0]
+                relationship = self.add_relationship(pkg, versions)
+                pkg.relations.append(relationship)
 
-                relationship = self.add_relationship(parent, childrens)
-                parent.relations.append(relationship)
-
+                ''' Añadir que no se puedan duplicar '''
                 if data[pkg_name][1]:
-                    for constraints in data[pkg_name][1]:
-                        constraint = self.add_constraint(constraints, data[pkg_name][1][constraints], parent)
-                        parent.constraints.append(constraint)
+                    for constraint in data[pkg_name][1]:
+                        constraint_ = self.add_constraint(constraint, data[pkg_name][1][constraint], pkg)
+                        pkg.constraints.append(constraint_)
 
         print(self.__str__())
         return self
 
-    def add_feature(self, pkg_name, parent = None):
-        feature = Feature(pkg_name, parent)
-        self.features.append(feature)
-        return feature
+    def add_package(self, pkg_name):
+        pkg = Package(pkg_name)
+        self.packages.append(pkg)
+        return pkg
     
-    def add_relationship(self, parent, childrens):
-        relationship = Relationship(parent, childrens)
+    def add_relationship(self, pkg, versions):
+        relationship = Relationship(pkg, versions)
         self.relationships.append(relationship)
         return relationship
 
-    def add_constraint(self, op, version, feature):
-        constraint = Constraint(op, version, feature)
+    def add_constraint(self, op, version, pkg):
+        constraint = Constraint(op, version, pkg)
         self.constraints.append(constraint)
         return constraint
 
-    def get_feature(self, name):
-        for feat in self.features:
-            if feat.name == name:
-                return feat
+    def get_package(self, name):
+        for pkg in self.packages:
+            if pkg.name == name:
+                return pkg
 
     def __str__(self) -> str:
-        model_str = 'Features: \n'
+        model_str = 'Packages: \n'
         i = 0
-        for feat in self.features:
-            model_str += f'Feature{i}: {feat.name} \n'
+        for pkg in self.packages:
+            model_str += f'Package{i}: {pkg.name} \n'
             i += 1
 
         model_str += '\n'
@@ -88,8 +85,7 @@ class Metamodel():
         model_str += 'Relationships: \n'
         i = 0
         for rel in self.relationships:
-            names = [child.name for child in rel.childrens]
-            model_str += f'Relationship{i}: {rel.parent.name} - {names} \n'
+            model_str += f'Relationship{i}: {rel.package.name} - {rel.versions} \n'
             i += 1
 
         model_str += '\n'
@@ -97,7 +93,7 @@ class Metamodel():
         model_str += 'Constraints: \n'
         i = 0
         for const in self.constraints:
-            model_str += f'Constraint{i}: {const.feature.name} {const.name} \n'
+            model_str += f'Constraint{i}: {const.package.name} {const.name} \n'
             i += 1
 
         return model_str

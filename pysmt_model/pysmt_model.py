@@ -22,18 +22,20 @@ class PySMTModel():
 
     ''' Con el metamodelo construido lo transformamos en un modelo PySMT '''
     def generate_model(self) -> None:
-        dist_feats = filter(lambda feat: feat.parent is None, self.metamodel.features)
-        for feat in dist_feats:
-            var = Symbol(feat.name, INT)
+        for pkg in self.metamodel.packages:
+            var = Symbol(pkg.name, INT)
             self.vars.append(var)
             ctc_names = {}
-            for ctc in feat.constraints:
+            for ctc in pkg.constraints:
                 ctc_names.update(ctc.name)
 
-            for rel in feat.relations:
-                if feat.constraints:
+            for rel in pkg.relations:
+                if pkg.constraints:
                     p_domain = self.add_problems(var, ctc_names)
-                v_domain = Or([Equals(var, Int(self.transform(version.name))) for version in rel.childrens])
+
+                ''' Añadir que no se puedan añadir vacias '''
+                # if rel.versions:
+                v_domain = Or([Equals(var, Int(self.transform(version))) for version in rel.versions])
                 
                 aux = [v_domain]
                 aux.extend(p_domain)
