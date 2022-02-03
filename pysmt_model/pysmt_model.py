@@ -27,15 +27,15 @@ class PySMTModel():
             self.vars.append(var)
 
             for rel in pkg.relations:
-                if pkg.constraints:
-                    p_domain = self.add_problems(var, pkg.constraints)
-
                 v_domain = Or([Equals(var, Int(self.transform(version))) for version in rel.versions])
+                aux = [v_domain]
                 # if v_domain is false there aren't any version that satisfies the constraints
                 # print(v_domain)
-                
-                aux = [v_domain]
-                aux.extend(p_domain)
+
+                if pkg.constraints:
+                    p_domain = self.add_problems(var, pkg.constraints)
+                    aux.extend(p_domain)
+
                 self.domains.append(And(aux))
 
         print(self.vars)
