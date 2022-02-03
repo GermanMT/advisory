@@ -8,10 +8,16 @@ import time
 # GermanMT/AMADEUS
 # psf/requests
 
+'''
+Repositorio con ficheros de dependencias contradictorios: GermanMT/prueba1
+
+Repositorio con ficheros de dependencias no contradictorios: GermanMT/prueba1
+'''
+
 begin = time.time()
 
-''' Creamos el metamodelo sobre una serie de fciheros de un repositorio '''
-metamodel = Metamodel(['setup.py'], 'psf/requests')
+''' Creamos el metamodelo sobre una serie de ficheros de un repositorio '''
+metamodel = Metamodel(['setup.py', 'requirements.txt'], 'GermanMT/prueba1')
 
 metamodelo = metamodel.generate_metamodel()
 

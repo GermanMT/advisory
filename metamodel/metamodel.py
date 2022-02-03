@@ -33,21 +33,25 @@ class Metamodel():
     ''' Una vez obtengamos el dicionario con las dependencias asociadas a las distribuciones
     permitidas por las restricciones comenzaremos a construir el metamodelo '''
     def generate_metamodel(self) -> None:
-        data = RawData().get_data(self.files[0], self.nameWithOwner)
-        for pkg_name in data:
-            parent = self.add_feature(pkg_name)
-            childrens = list()
-            for children in data[pkg_name][0]:
-                childrens.append(self.add_feature(children, parent))
+        for file in self.files:
+            data = RawData().get_data(file, self.nameWithOwner)
+            for pkg_name in data:
+                if pkg_name not in [feat.name for feat in self.features]:
+                    parent = self.add_feature(pkg_name)
+                else:
+                    parent = self.get_feature(pkg_name)
 
-            relationship = self.add_relationship(parent, childrens)
-            parent.relations.append(relationship)
+                childrens = list()
+                for children in data[pkg_name][0]:
+                    childrens.append(self.add_feature(children, parent))
 
-            if data[pkg_name][1]:
-                for constraints in data[pkg_name][1]:
-                    constraint = self.add_constraint(constraints, data[pkg_name][1][constraints], parent)
-                    parent.constraints.append(constraint)
+                relationship = self.add_relationship(parent, childrens)
+                parent.relations.append(relationship)
 
+                if data[pkg_name][1]:
+                    for constraints in data[pkg_name][1]:
+                        constraint = self.add_constraint(constraints, data[pkg_name][1][constraints], parent)
+                        parent.constraints.append(constraint)
 
         print(self.__str__())
         return self
@@ -66,6 +70,11 @@ class Metamodel():
         constraint = Constraint(op, version, feature)
         self.constraints.append(constraint)
         return constraint
+
+    def get_feature(self, name):
+        for feat in self.features:
+            if feat.name == name:
+                return feat
 
     def __str__(self) -> str:
         model_str = 'Features: \n'

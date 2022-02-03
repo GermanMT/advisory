@@ -1,8 +1,7 @@
 from metamodel.metamodel import Metamodel
 
-from pysmt.shortcuts import  Equals, GT, LT, GE, LE, NotEquals, Symbol, And, Or, EqualsOrIff, Int, get_model, Solver, Not
+from pysmt.shortcuts import  Equals, GT, LT, GE, LE, NotEquals, Symbol, And, Or, Int
 from pysmt.typing import INT
-from pysmt.oracles import get_logic
 
 
 class PySMTModel():
