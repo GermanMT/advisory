@@ -16,8 +16,8 @@ class Relationship():
 
 class Constraint():
     
-    def __init__(self, op, version, package):
-        self.name = {op: version}
+    def __init__(self, name, package):
+        self.name = name
         self.package = package
 
 class Metamodel():
@@ -44,10 +44,9 @@ class Metamodel():
                 relationship = self.add_relationship(pkg, versions)
                 pkg.relations.append(relationship)
 
-                ''' Añadir que no se puedan duplicar '''
                 if data[pkg_name][1]:
                     for constraint in data[pkg_name][1]:
-                        constraint_ = self.add_constraint(constraint, data[pkg_name][1][constraint], pkg)
+                        constraint_ = self.add_constraint(constraint, pkg)
                         pkg.constraints.append(constraint_)
 
         print(self.__str__())
@@ -63,8 +62,8 @@ class Metamodel():
         self.relationships.append(relationship)
         return relationship
 
-    def add_constraint(self, op, version, pkg):
-        constraint = Constraint(op, version, pkg)
+    def add_constraint(self, name, pkg):
+        constraint = Constraint(name, pkg)
         self.constraints.append(constraint)
         return constraint
 

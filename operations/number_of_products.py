@@ -2,8 +2,9 @@ from pysmt.shortcuts import  Symbol, And, EqualsOrIff, Solver, Not
 from pysmt.oracles import get_logic
 
 
-def number_of_products(formula, keys: list[Symbol]) -> None:
+def number_of_products(semi_formula, keys: list[Symbol]) -> None:
     i = 0
+    formula = And(semi_formula)
     target_logic = get_logic(formula)
     with Solver(logic = target_logic, name = 'z3') as solver:
         solver.add_assertion(formula)
@@ -14,4 +15,4 @@ def number_of_products(formula, keys: list[Symbol]) -> None:
             # print(partial_model)
             solver.add_assertion(Not(And(partial_model)))
 
-    print(i)
+    return i

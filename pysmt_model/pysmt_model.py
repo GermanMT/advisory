@@ -25,17 +25,14 @@ class PySMTModel():
         for pkg in self.metamodel.packages:
             var = Symbol(pkg.name, INT)
             self.vars.append(var)
-            ctc_names = {}
-            for ctc in pkg.constraints:
-                ctc_names.update(ctc.name)
 
             for rel in pkg.relations:
                 if pkg.constraints:
-                    p_domain = self.add_problems(var, ctc_names)
+                    p_domain = self.add_problems(var, pkg.constraints)
 
-                ''' Añadir que no se puedan añadir vacias '''
-                # if rel.versions:
                 v_domain = Or([Equals(var, Int(self.transform(version))) for version in rel.versions])
+                # if v_domain is false there aren't any version that satisfies the constraints
+                # print(v_domain)
                 
                 aux = [v_domain]
                 aux.extend(p_domain)
@@ -61,17 +58,12 @@ class PySMTModel():
         return version
 
     ''' Crea las restricciones para el modelo smt '''
-    def add_problems(self, var: Symbol, problems: dict[str, str]) -> list:
+    def add_problems(self, var: Symbol, problems: list) -> list:
         problems_ = []
 
         for problem in problems:
-            if problem.__contains__('||'):
-                op = '!='
-                version_ = problems[problem]
-            else:
-                op = problem
-                version_ = problems[problem]
-            problem_ = self.ops[op](var, Int(self.transform(version_)))
+            parts = problem.name.split(' ')
+            problem_ = self.ops[parts[0]](var, Int(self.transform(parts[1])))
             problems_.append(problem_)
 
         return problems_

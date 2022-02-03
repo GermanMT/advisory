@@ -20,7 +20,7 @@ class RawData():
     ''' Usar metodo para recoger y comparar versiones obtenidas en pypi con el formato
     obtenido, y así construir el diccionario de dependencias asocidas a las distribuciones 
     aceptadas '''
-    def get_data(self, file: str, nameWithOwner:str) -> dict[str, list[str]]:
+    def get_data(self, file: str, nameWithOwner:str) -> dict[str, list]:
         dependencies = Dependencies(file).get_dependencies(nameWithOwner)
 
         data = {}
@@ -43,26 +43,29 @@ class RawData():
         return version >= version_ and version[tam] >= version_[tam]
 
     @staticmethod
-    def get_constraints(parts: list[str]) -> dict[str, str]:
-        constraints = {}
+    def get_constraints(parts: list[str]) -> list[str]:
+        constraints = []
 
         for part in parts:
             attr = part.split(' ')
             if part.__contains__('||'):
-                op = '!='
-                version_ = attr[1]
+                attr = part.split(' ')
+                constraint = '!= ' + attr[1]
             else:
-                op = attr[0]
-                version_ = attr[1]
-            constraints[op] = version_
+                constraint = part
+            constraints.append(constraint)
 
         return constraints
 
-    def get_distributions(self, pkg_name: str, constraints: dict[str, str]) -> list[str]:
+    def get_distributions(self, pkg_name: str, constraints: list[str]) -> list[str]:
         distributions = []
 
         for version in get_versions(pkg_name):
-            checkers = [self.ops[op](version, constraints[op]) for op in constraints]
+            checkers = []
+            for constraint in constraints:
+                parts = constraint.split(' ')
+                checkers.append(self.ops[parts[0]](version, parts[1]))
+
             if all(checkers):
                 distributions.append(version)
 

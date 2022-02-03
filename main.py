@@ -33,3 +33,6 @@ print('Tiempo: ', time.time() - begin)
 print('\n')
 print('¿Es el modelo válido? \n')
 print(valid_model(modelo_smt.domains))
+
+print('¿Cuál es el número de productos del modelo? \n')
+print(number_of_products(modelo_smt.domains, modelo_smt.vars))
