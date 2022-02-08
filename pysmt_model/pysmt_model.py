@@ -3,6 +3,8 @@ from metamodel.metamodel import Metamodel
 from pysmt.shortcuts import  Equals, GT, LT, GE, LE, NotEquals, Symbol, And, Or, Int
 from pysmt.typing import INT
 
+import re
+
 
 class PySMTModel():
 
@@ -54,7 +56,7 @@ class PySMTModel():
         elif dots == 0:
             version += '.0.0.0'
 
-        l = [int(x, 10) for x in version.split('.') if x.isnumeric()]
+        l = [int(re.sub('[^0-9]','', x), 10) for x in version.split('.')]
         l.reverse()
         version = sum(x * (100 ** i) for i, x in enumerate(l))
         return version
