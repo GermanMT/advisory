@@ -17,7 +17,7 @@ Repositorio con ficheros de dependencias no contradictorios: GermanMT/prueba1
 begin = time.time()
 
 ''' Creamos el metamodelo sobre una serie de ficheros de un repositorio '''
-metamodel = Metamodel(['tensorflow/tools/pip_package/setup.py', 'tensorflow/tools/ci_build/release/requirements_common.txt'], 'tensorflow/tensorflow')
+metamodel = Metamodel(['setup.py', 'requirements-dev.txt'], 'psf/requests')
 
 metamodelo = metamodel.generate_metamodel()
 

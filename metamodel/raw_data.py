@@ -1,6 +1,7 @@
-from ctypes import sizeof
 from metamodel.dependencies import Dependencies
 from metamodel.versions import get_versions
+
+from pkg_resources import parse_version
 
 from operator import eq, gt, lt, ge, le, ne
 
@@ -14,8 +15,7 @@ class RawData():
             '<': lt,
             '>=': ge,
             '<=': le,
-            '!=': ne,
-            '~>': self.approx_gt
+            '!=': ne
             }
 
     ''' Usar metodo para recoger y comparar versiones obtenidas en pypi con el formato
@@ -47,12 +47,12 @@ class RawData():
             version += '.0.0'
         elif dots == 0:
             version += '.0.0.0'
-        
+
         parts = version.split('.')
         parts_ = version_.split('.')
         tam_ = len(parts_) - 1
 
-        return version >= version_ and parts[tam_] >= parts_[tam_]
+        return parse_version(version) >= parse_version(version_) and parts[tam_] >= parts_[tam_]
 
     @staticmethod
     def get_constraints(parts: list[str]) -> list[str]:
@@ -76,7 +76,10 @@ class RawData():
             checkers = []
             for constraint in constraints:
                 parts = constraint.split(' ')
-                checkers.append(self.ops[parts[0]](version, parts[1]))
+                if parts[0] == '~>':
+                    checkers.append(self.approx_gt(version, parts[1]))
+                else:
+                    checkers.append(self.ops[parts[0]](parse_version(version), parse_version(parts[1])))
 
             if all(checkers):
                 distributions.append(version)
