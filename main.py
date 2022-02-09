@@ -17,7 +17,9 @@ Repositorio con ficheros de dependencias no contradictorios: GermanMT/prueba1
 begin = time.time()
 
 ''' Creamos el metamodelo sobre una serie de ficheros de un repositorio '''
-metamodel = Metamodel(['requirements-dev-lock.txt', 'requirements-dev.txt', 'setup.py'], 'boto/s3transfer')
+
+''' TODO: Solucionar error con el simbolo * '''
+metamodel = Metamodel(['setup.py'], 'boto/s3transfer')
 
 metamodelo = metamodel.generate_metamodel()
 

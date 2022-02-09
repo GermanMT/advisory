@@ -56,7 +56,7 @@ class PySMTModel():
         elif dots == 0:
             version += '.0.0.0'
 
-        l = [int(re.sub('[^0-9]','', x), 10) for x in version.split('.')]
+        l = [int(re.sub('[^0-9]', '', x), 10) for x in version.split('.')]
         l.reverse()
         version = sum(x * (100 ** i) for i, x in enumerate(l))
         return version
