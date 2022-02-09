@@ -55,6 +55,20 @@ class RawData():
         return parse_version(version) >= parse_version(version_) and parts[tam_] >= parts_[tam_]
 
     @staticmethod
+    def approx_gt_patch(version: str, version_: str) -> bool:
+        parts = version.split('.')
+        parts_ = version_.split('.')
+
+        return parse_version(version) >= parse_version(version_) and parts[2] >= parts_[2]
+
+    @staticmethod
+    def approx_gt_minor(version: str, version_: str) -> bool:
+        parts = version.split('.')
+        parts_ = version_.split('.')
+
+        return parse_version(version) >= parse_version(version_) and parts[1] >= parts_[1]
+
+    @staticmethod
     def get_constraints(parts: list[str]) -> list[str]:
         constraints = []
 
@@ -80,6 +94,10 @@ class RawData():
                 parts = constraint.split(' ')
                 if parts[0] == '~>':
                     checkers.append(self.approx_gt(version, parts[1]))
+                elif parts[0] == '^':
+                    checkers.append(self.approx_gt_minor(version, parts[1]))
+                elif parts[0] == '~':
+                    checkers.append(self.approx_gt_patch(version, parts[1]))
                 else:
                     checkers.append(self.ops[parts[0]](parse_version(version), parse_version(parts[1])))
 

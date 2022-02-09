@@ -19,7 +19,9 @@ class PySMTModel():
             '>=': GE,
             '<=': LE,
             '!=': NotEquals,
-            '~>': GE
+            '~>': GE,
+            '^': GE,
+            '~': GE
             }
 
     ''' Con el metamodelo construido lo transformamos en un modelo PySMT '''

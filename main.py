@@ -18,8 +18,7 @@ begin = time.time()
 
 ''' Creamos el metamodelo sobre una serie de ficheros de un repositorio '''
 
-''' TODO: Solucionar error con el simbolo * '''
-metamodel = Metamodel(['setup.py'], 'boto/s3transfer')
+metamodel = Metamodel(['requirements-check.txt', 'requirements-dev-lock.txt', 'requirements-dev.txt', 'requirements-docs.txt', 'setup.py'], 'aws/aws-cli')
 
 metamodelo = metamodel.generate_metamodel()
 
