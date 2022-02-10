@@ -12,7 +12,7 @@ class PySMTModel():
         self.metamodel = metamodel
         self.domains = list()
         self.vars = list()
-        self.ops = {
+        self.__ops = {
             '=': Equals,
             '>': GT,
             '<': LT,
@@ -69,7 +69,7 @@ class PySMTModel():
 
         for problem in problems:
             parts = problem.name.split(' ')
-            problem_ = self.ops[parts[0]](var, Int(self.transform(parts[1])))
+            problem_ = self.__ops[parts[0]](var, Int(self.transform(parts[1])))
             problems_.append(problem_)
 
         return problems_

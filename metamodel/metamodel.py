@@ -1,4 +1,4 @@
-from metamodel.raw_data import RawData
+from metamodel.utils.raw_data import get_data
 
 
 class Package():
@@ -22,9 +22,9 @@ class Constraint():
 
 class Metamodel():
 
-    def __init__(self, files: list[str], nameWithOwner: str) -> None:
+    def __init__(self, files: list[str], name_with_owner: str) -> None:
         self.files = files
-        self.nameWithOwner = nameWithOwner
+        self.name_with_owner = name_with_owner
         self.packages = list()
         self.relationships = list()
         self.constraints = list()
@@ -33,7 +33,7 @@ class Metamodel():
     permitidas por las restricciones comenzaremos a construir el metamodelo '''
     def generate_metamodel(self) -> None:
         for file in self.files:
-            data = RawData().get_data(file, self.nameWithOwner)
+            data = get_data(file, self.name_with_owner)
             for pkg_name in data:
                 if pkg_name not in [package.name for package in self.packages]:
                     pkg = self.add_package(pkg_name)

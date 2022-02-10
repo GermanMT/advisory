@@ -1,6 +1,6 @@
 from metamodel.metamodel import Metamodel
-from operations import *
 from pysmt_model.pysmt_model import PySMTModel
+from pysmt_model.operations import *
 
 import time
 
