@@ -12,6 +12,7 @@ class PySMTModel():
         self.model = model
         self.domains = list()
         self.vars = list()
+        self.impacts = dict()
         self.__ops = {
             '=': Equals,
             '>': GT,
@@ -34,11 +35,17 @@ class PySMTModel():
             for parent_name in package.versions:
                 versions_.extend(package.versions[parent_name])
 
-            aux = [Or([Equals(var, Int(self.transform(version.ver_name))) for version in versions_])]
+            aux1 = list()
+            for version in versions_:
+                trans_ver = self.transform(version.ver_name)
+                v_impact = sum([cve.cvss.impact_score for cve in version.cves]) / len(version.cves) if version.cves else 0
+                self.impacts[package.pkg_name + str(trans_ver)] = v_impact
+                aux1.append(Equals(var, Int(trans_ver)))
+
+            aux = [Or(aux1)]
             # if v_domain is false there aren't any version that satisfies the constraints
             # print(v_domain)
 
-            # for relelationship in package.parent_relationship:
             p_domain = self.add_problems(var, package.parent_relationship.constraints)
             aux.extend(p_domain)
 

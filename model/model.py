@@ -15,6 +15,7 @@ class Version:
 
         self.ver_name = ver_name
         self.release_date = release_date
+        self.cves: 'CVE' = list()
 
     def __repr__(self) -> str:
         return self.ver_name

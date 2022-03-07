@@ -5,17 +5,20 @@ from cve.CVE import CVE
 from cve.CVSS import CVSS
 from model.model import Package
 
+import time
+
 
 def add_cves(package: 'Package') -> None:
     cves = list()
 
     for pkg_name in package.versions:
         for version in package.versions[pkg_name]:
-            cpes = get_cpes(package.pkg_name + ' ' + version.ver_name)
+            time.sleep(1)
+            cpes_ = get_cpes(package.pkg_name + ' ' + version.ver_name)
 
             cve_names = list()
 
-            for cpe in cpes['result']['cpes']:
+            for cpe in cpes_['result']['cpes']:
                 for related_cve in cpe['vulnerabilities']:
                     if related_cve != '':
                         cve_names.append(related_cve)
@@ -30,7 +33,7 @@ def add_cves(package: 'Package') -> None:
                         for data in item['cve']['description']['description_data']:
                             description = data['value']
 
-                        cpes = []
+                        cpes = list()
 
                         for node in item['configurations']['nodes']:
                             for cpe_match in node['cpe_match']:
@@ -38,9 +41,10 @@ def add_cves(package: 'Package') -> None:
                                     cpes.append(cpe_name['cpe23Uri'])
 
                         cvss = get_cvss(item['impact']['baseMetricV3'])
-                    
+
                     cve = CVE(id, 'nvd', description, cpes, cvss)
                 package.cves.append(cve)
+                version.cves.append(cve)
                 cves.append(cve_name)
 
 def get_cvss(baseMetricV3: dict) -> 'CVSS':
@@ -54,5 +58,5 @@ def get_cvss(baseMetricV3: dict) -> 'CVSS':
         baseMetricV3['exploitabilityScore'],
         baseMetricV3['impactScore']
     )
-    
+
     return cvss3

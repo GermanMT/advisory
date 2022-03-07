@@ -1,6 +1,7 @@
 from model.model import Model
 from model.model import Package
 from model.utils.other.add_cves import add_cves
+from pysmt_model.operations.new_operation import new_operation
 
 from pysmt_model.pysmt_model import PySMTModel
 from pysmt_model.operations import *
@@ -11,9 +12,11 @@ import time
 TODO:
 - Asociar las versiones al fichero de requisitos del que provienen
 - Implementar la transformación al grafo
-- Implementar operacion del impact score
+- Mejorar implementaciín de la operacion del impact score
 - Averiguar extracción 'https://nvd.nist.gov/vuln/detail/CVE-2021-45958#range-7645712'
 - Plantear coger versiones de proyectos de github
+- Crear fichero para las transformaciones entre entero y version
+- Optimizar extracción de CVE's
 '''
 
 root = Package(
@@ -35,10 +38,16 @@ print('Tiempo de construcción del modelo: ', time.time() - begin)
 print('Grafo de dependencias de MiProyecto: ')
 print(modelo)
 
+for package in modelo.packages:
+    time.sleep(15)
+    if package.versions:
+        add_cves(package)
+
 modelo_smt = PySMTModel(modelo)
 modelo_smt.generate_model()
 
-print(valid_model(modelo_smt.domains))
+# [(flask = 1010000), (urllib3 = 1250000)] = 3.15
+print(new_operation(modelo_smt, 3))
 
 
 # print('Vulnerabilidades extraidas para las dependencias: ')
