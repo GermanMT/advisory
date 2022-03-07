@@ -1,4 +1,4 @@
-from metamodel.metamodel import Metamodel
+from model.model import Model
 
 from pysmt.shortcuts import  Equals, GT, LT, GE, LE, NotEquals, Symbol, And, Or, Int
 from pysmt.typing import INT
@@ -8,8 +8,8 @@ import re
 
 class PySMTModel():
 
-    def __init__(self, metamodel: Metamodel) -> None:
-        self.metamodel = metamodel
+    def __init__(self, model: Model) -> None:
+        self.model = model
         self.domains = list()
         self.vars = list()
         self.__ops = {
@@ -26,21 +26,23 @@ class PySMTModel():
 
     ''' Con el metamodelo construido lo transformamos en un modelo PySMT '''
     def generate_model(self) -> None:
-        for pkg in self.metamodel.packages:
-            var = Symbol(pkg.name, INT)
+        for package in self.model.packages:
+            var = Symbol(package.pkg_name, INT)
             self.vars.append(var)
 
-            for rel in pkg.relations:
-                v_domain = Or([Equals(var, Int(self.transform(version))) for version in rel.versions])
-                aux = [v_domain]
-                # if v_domain is false there aren't any version that satisfies the constraints
-                # print(v_domain)
+            versions_ = list()
+            for parent_name in package.versions:
+                versions_.extend(package.versions[parent_name])
 
-                if pkg.constraints:
-                    p_domain = self.add_problems(var, pkg.constraints)
-                    aux.extend(p_domain)
+            aux = [Or([Equals(var, Int(self.transform(version.ver_name))) for version in versions_])]
+            # if v_domain is false there aren't any version that satisfies the constraints
+            # print(v_domain)
 
-                self.domains.append(And(aux))
+            # for relelationship in package.parent_relationship:
+            p_domain = self.add_problems(var, package.parent_relationship.constraints)
+            aux.extend(p_domain)
+
+            self.domains.append(And(aux))
 
         print(self.vars)
         print(self.domains)
@@ -64,11 +66,11 @@ class PySMTModel():
         return version
 
     ''' Crea las restricciones para el modelo smt '''
-    def add_problems(self, var: Symbol, problems: list) -> list:
+    def add_problems(self, var: Symbol, constrains: list) -> list:
         problems_ = []
 
-        for problem in problems:
-            parts = problem.name.split(' ')
+        for constraint in constrains:
+            parts = constraint.signature.split(' ')
             problem_ = self.__ops[parts[0]](var, Int(self.transform(parts[1])))
             problems_.append(problem_)
 
