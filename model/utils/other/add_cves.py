@@ -13,8 +13,10 @@ def add_cves(package: 'Package') -> None:
 
     for pkg_name in package.versions:
         for version in package.versions[pkg_name]:
-            time.sleep(1)
             cpes_ = get_cpes(package.pkg_name + ' ' + version.ver_name)
+
+            if not cpes_:
+                continue
 
             cve_names = list()
 

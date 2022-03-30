@@ -1,7 +1,7 @@
 from model.model import Model
 from model.model import Package
 from model.utils.other.add_cves import add_cves
-from pysmt_model.operations.new_operation import new_operation
+from pysmt_model.operations.check_configs import check_configs
 
 from pysmt_model.pysmt_model import PySMTModel
 from pysmt_model.operations import *
@@ -12,7 +12,6 @@ import time
 TODO:
 - Asociar las versiones al fichero de requisitos del que provienen
 - Implementar la transformación al grafo
-- Mejorar implementaciín de la operacion del impact score
 - Averiguar extracción 'https://nvd.nist.gov/vuln/detail/CVE-2021-45958#range-7645712'
 - Plantear coger versiones de proyectos de github
 - Crear fichero para las transformaciones entre entero y version
@@ -26,29 +25,36 @@ root = Package(
     'None',
     True,
     [],
-    'GermanMT/prueba1'
+    'GermanMT/prueba2'
 )
 
 begin = time.time()
 
 modelo = Model(root, 2)
-modelo.generate_model('GermanMT/prueba1', root)
+modelo.generate_model('GermanMT/prueba2', root)
 
 print('Tiempo de construcción del modelo: ', time.time() - begin)
 print('Grafo de dependencias de MiProyecto: ')
 print(modelo)
 
 for package in modelo.packages:
-    time.sleep(15)
     if package.versions:
         add_cves(package)
 
 modelo_smt = PySMTModel(modelo)
 modelo_smt.generate_model()
 
-# [(flask = 1010000), (urllib3 = 1250000)] = 3.15
-print(new_operation(modelo_smt, 3))
+# Todas
+results = check_configs(modelo_smt)
 
+# Filtrando
+#results = check_configs(modelo_smt, impact_threshold = 3)
+
+# Priorizando
+#results = check_configs(modelo_smt, impact_threshold = 3, sorted = True)
+
+for result in results:
+    print(result)
 
 # print('Vulnerabilidades extraidas para las dependencias: ')
 
