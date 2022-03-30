@@ -25,33 +25,41 @@ root = Package(
     'None',
     True,
     [],
-    'GermanMT/prueba2'
+    'GermanMT/prueba1'
 )
 
 begin = time.time()
 
 modelo = Model(root, 2)
-modelo.generate_model('GermanMT/prueba2', root)
+modelo.generate_model('GermanMT/prueba1', root)
 
 print('Tiempo de construcción del modelo: ', time.time() - begin)
+
 print('Grafo de dependencias de MiProyecto: ')
 print(modelo)
+
+begin = time.time()
 
 for package in modelo.packages:
     if package.versions:
         add_cves(package)
 
+print('Tiempo de atribución del modelo: ', time.time() - begin)
+
 modelo_smt = PySMTModel(modelo)
 modelo_smt.generate_model()
 
 # Todas
-results = check_configs(modelo_smt)
+# results = check_configs(modelo_smt)
 
 # Filtrando
-#results = check_configs(modelo_smt, impact_threshold = 3)
+# results = check_configs(modelo_smt, impact_threshold = 3)
 
 # Priorizando
-#results = check_configs(modelo_smt, impact_threshold = 3, sorted = True)
+results = check_configs(modelo_smt, sorted = True)
+
+# Filtrando y Priorizando
+# results = check_configs(modelo_smt, impact_threshold = 3, sorted = True)
 
 for result in results:
     print(result)

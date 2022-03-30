@@ -1,5 +1,5 @@
 def parse_constraints(parts: list[str]) -> list[str]:
-    constraints = []
+    constraints = list()
 
     for part in parts:
         if part.__contains__('||'):

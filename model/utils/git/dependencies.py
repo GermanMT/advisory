@@ -1,6 +1,8 @@
-import json, requests
+import json
+from requests import request
 
 from model.utils.git.req_files import get_req_files
+
 
 headers = {
     'Accept': 'application/vnd.github.hawkgirl-preview+json',
@@ -11,13 +13,19 @@ url = 'https://api.github.com/graphql'
 
 def get_dependencies(name_with_owner: str) -> dict[str, str]:
     atts = name_with_owner.split('/')
-    query = '{\"query\":\"query {\\n repository(owner:\\\"' + atts[0] + '\\\", name:\\\"' + atts[1] + '\\\") {\\n dependencyGraphManifests { \\n edges { \\n node { \\n blobPath \\n dependencies { \\n nodes { \\n repository { \\n nameWithOwner \\n } \\n packageName \\n requirements \\n hasDependencies \\n packageManager \\n } \\n } \\n } \\n } \\n } \\n } \\n } \" }'
+    query = '{\"query\":\"query {\\n repository(owner:\\\"' \
+        + atts[0] + '\\\", name:\\\"' \
+        + atts[1] + '\\\") {\\n dependencyGraphManifests { \\n edges ' \
+        '{ \\n node { \\n blobPath \\n dependencies { \\n nodes ' \
+        '{ \\n repository { \\n nameWithOwner \\n } \\n packageName ' \
+        '\\n requirements \\n hasDependencies \\n packageManager \\n ' \
+        '} \\n } \\n } \\n } \\n } \\n } \\n } \" }'
 
-    response = requests.request('POST', url, data = query, headers = headers)
+    response = request('POST', url, data = query, headers = headers)
     return json_reader(response.json())
 
 def json_reader(data: json) -> dict[str, str]: 
-    dependencies = {}
+    dependencies = dict()
 
     for edge in data['data']['repository']['dependencyGraphManifests']['edges']:
         file = edge['node']['blobPath'].split('/')[-1]

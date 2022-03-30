@@ -3,7 +3,7 @@ from pysmt.oracles import get_logic
 
 from pysmt_model.pysmt_model import PySMTModel
 
-import re
+from re import sub
 
 
 def check_configs(smt_model: PySMTModel, impact_threshold: int = 10, sorted: bool = False) -> None:
@@ -18,7 +18,7 @@ def check_configs(smt_model: PySMTModel, impact_threshold: int = 10, sorted: boo
 
             solver.add_assertion(Not(And(config)))
 
-            impact_score = sum(smt_model.impacts[re.sub(r'=|\(|\)| ', '', str(key))] for key in config) / len(config)
+            impact_score = sum(smt_model.impacts[sub(r'=|\(|\)| ', '', str(key))] for key in config) / len(config)
             if impact_score <= impact_threshold:
                 results.append({'config': config, 'impact_score': impact_score})
 

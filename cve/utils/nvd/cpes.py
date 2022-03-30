@@ -1,4 +1,5 @@
-import requests
+from requests import get
+from time import sleep
 
 def get_cpes(name: str):
     link = 'https://services.nvd.nist.gov/rest/json/cpes/1.0?'
@@ -10,7 +11,8 @@ def get_cpes(name: str):
 
     searchCriteria = f'&keyword={name}&addOns=cves'
 
-    request = requests.get(link + searchCriteria, headers = headers)
+    # sleep(1)
+    request = get(link + searchCriteria, headers = headers)
 
     response = request.json()
 

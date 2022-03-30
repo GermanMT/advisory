@@ -10,7 +10,7 @@ def number_of_products(semi_formula, keys: list[Symbol]) -> None:
         solver.add_assertion(formula)
         while solver.solve():
             partial_model = [EqualsOrIff(k, solver.get_value(k)) for k in keys]
-            i += 1
             solver.add_assertion(Not(And(partial_model)))
+            i += 1
 
     return i

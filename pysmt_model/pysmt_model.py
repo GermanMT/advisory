@@ -3,7 +3,7 @@ from model.model import Model
 from pysmt.shortcuts import  Equals, GT, LT, GE, LE, NotEquals, Symbol, And, Or, Int
 from pysmt.typing import INT
 
-import re
+from re import sub
 
 
 class PySMTModel():
@@ -43,8 +43,6 @@ class PySMTModel():
                 aux1.append(Equals(var, Int(trans_ver)))
 
             aux = [Or(aux1)]
-            # if v_domain is false there aren't any version that satisfies the constraints
-            # print(v_domain)
 
             p_domain = self.add_problems(var, package.parent_relationship.constraints)
             aux.extend(p_domain)
@@ -67,7 +65,7 @@ class PySMTModel():
         elif dots == 0:
             version += '.0.0.0'
 
-        l = [int(re.sub('[^0-9]', '0', x), 10) for x in version.split('.')]
+        l = [int(sub('[^0-9]', '0', x), 10) for x in version.split('.')]
         l.reverse()
         version = sum(x * (100 ** i) for i, x in enumerate(l))
         return version

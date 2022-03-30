@@ -5,8 +5,6 @@ from cve.CVE import CVE
 from cve.CVSS import CVSS
 from model.model import Package
 
-import time
-
 
 def add_cves(package: 'Package') -> None:
     cves = list()
