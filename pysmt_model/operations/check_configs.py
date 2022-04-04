@@ -1,4 +1,4 @@
-from pysmt.shortcuts import Solver, And, EqualsOrIff, Not
+from pysmt.shortcuts import Solver, And, EqualsOrIff, Not, LE, Real
 from pysmt.oracles import get_logic
 
 from pysmt_model.pysmt_model import PySMTModel
@@ -6,8 +6,11 @@ from pysmt_model.pysmt_model import PySMTModel
 from re import sub
 
 
-def check_configs(smt_model: PySMTModel, impact_threshold: int = 10, sorted: bool = False) -> None:
+def check_configs(smt_model: PySMTModel, impact_threshold: float = 10., sorted: bool = False) -> None:
     results = list()
+
+    threshold_ctc = LE(smt_model.vars[0], Real(impact_threshold))
+    smt_model.domains.append(threshold_ctc)
 
     formula = And(smt_model.domains)
     target_logic = get_logic(formula)
@@ -18,11 +21,11 @@ def check_configs(smt_model: PySMTModel, impact_threshold: int = 10, sorted: boo
 
             solver.add_assertion(Not(And(config)))
 
-            impact_score = sum(smt_model.impacts[sub(r'=|\(|\)| ', '', str(key))] for key in config) / len(config)
-            if impact_score <= impact_threshold:
-                results.append({'config': config, 'impact_score': impact_score})
+            results.append(config)
+            print(config)
 
-    if sorted:
-        results.sort(key = lambda d: d['impact_score'], reverse = True) 
+    ''' Añadir función objetivo al SMT para priorizar las soluciones '''
+    # if sorted:
+    #     results.sort(key = lambda d: d['impact_score'], reverse = True) 
 
     return results

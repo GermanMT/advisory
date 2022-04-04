@@ -1,7 +1,7 @@
 from model.model import Model
 
-from pysmt.shortcuts import  Equals, GT, LT, GE, LE, NotEquals, Symbol, And, Or, Int
-from pysmt.typing import INT
+from pysmt.shortcuts import  Equals, GT, LT, GE, LE, NotEquals, Symbol, And, Or, Int, Not, Real, Div, Plus
+from pysmt.typing import INT, REAL
 
 from re import sub
 
@@ -12,7 +12,7 @@ class PySMTModel():
         self.model = model
         self.domains = list()
         self.vars = list()
-        self.impacts = dict()
+        self.impacts = list()
         self.__ops = {
             '=': Equals,
             '>': GT,
@@ -25,33 +25,78 @@ class PySMTModel():
             '~': GE
             }
 
-    ''' Con el metamodelo construido lo transformamos en un modelo PySMT '''
-    def generate_model(self) -> None:
+    ''' 
+    Con el metamodelo construido lo transformamos en un modelo PySMT
+    Reglas de las leyes de Morgan:
+        A <=> B      = (A => B) AND (B => A)
+        A  => B      = NOT(A) OR  B
+        NOT(A AND B) = NOT(A) OR  NOT(B)
+        NOT(A OR  B) = NOT(A) AND NOT(B)
+    '''
+    def generate_model(self) -> 'PySMTModel':
+        CVSSt = Symbol('CVSSt', REAL)
+        self.vars.append(CVSSt)
+        CVSSs = dict()
+
         for package in self.model.packages:
+            name = 'CVSS' + package.pkg_name
+            CVSSs[name] = Symbol(name, REAL)
+            self.vars.append(CVSSs[name])
+
             var = Symbol(package.pkg_name, INT)
             self.vars.append(var)
 
-            versions_ = list()
-            for parent_name in package.versions:
-                versions_.extend(package.versions[parent_name])
+            versions = list()
+            [versions.extend(package.versions[parent_name]) for parent_name in package.versions]
 
-            aux1 = list()
-            for version in versions_:
-                trans_ver = self.transform(version.ver_name)
-                v_impact = sum([cve.cvss.impact_score for cve in version.cves]) / len(version.cves) if version.cves else 0
-                self.impacts[package.pkg_name + str(trans_ver)] = v_impact
-                aux1.append(Equals(var, Int(trans_ver)))
-
-            aux = [Or(aux1)]
+            all_p_cves, p_vars, p_cvss = self.add_versions(versions, var, CVSSs[name])
 
             p_domain = self.add_problems(var, package.parent_relationship.constraints)
-            aux.extend(p_domain)
 
-            self.domains.append(And(aux))
+            _domains = [Or(p_vars), And(p_cvss)]
+            _domains.extend(all_p_cves)
+            _domains.extend(p_domain)
 
-        print(self.vars)
-        print(self.domains)
+            self.domains.append(And(_domains))
+
+        div = self.division(CVSSs.values())
+        self.domains.append(Equals(CVSSt, div))
+
         return self
+
+    def add_versions(self, versions, var, part_cvss) -> None:
+        all_p_cves = list()
+        p_vars = list()
+        p_cvss = list()
+
+        for version in versions:
+            trans_ver = self.transform(version.ver_name)
+
+            p_vars.append(Equals(var, Int(trans_ver)))
+
+            p_cves = self.add_cves(version)
+            all_p_cves.extend(p_cves.values())
+
+            v_impact = self.division(p_cves.keys()) if version.cves else Real(0.)
+            ctc = [Not(Equals(var, Int(trans_ver))),Equals(part_cvss, v_impact)]
+            p_cvss.append(Or(ctc))
+
+        return (all_p_cves, p_vars, p_cvss)
+
+    def add_cves(self, version) -> dict:
+        p_cves = dict()
+
+        for cve in version.cves:
+            cve_var = Symbol(cve.id, REAL)
+            self.vars.append(cve_var)
+            cve_val = Equals(cve_var, Real(cve.cvss.impact_score))
+            p_cves[cve_var] = cve_val
+
+        return p_cves
+
+    @staticmethod
+    def division(problem) -> Div:
+        return Div(Plus(problem), Real(len(problem)))
 
     ''' Transforma las versiones en un entero '''
     @staticmethod
@@ -72,7 +117,7 @@ class PySMTModel():
 
     ''' Crea las restricciones para el modelo smt '''
     def add_problems(self, var: Symbol, constrains: list) -> list:
-        problems_ = []
+        problems_ = list()
 
         for constraint in constrains:
             parts = constraint.signature.split(' ')

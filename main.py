@@ -25,13 +25,13 @@ root = Package(
     'None',
     True,
     [],
-    'GermanMT/prueba1'
+    'GermanMT/prueba2'
 )
 
 begin = time.time()
 
 modelo = Model(root, 2)
-modelo.generate_model('GermanMT/prueba1', root)
+modelo.generate_model('GermanMT/prueba2', root)
 
 print('Tiempo de construcción del modelo: ', time.time() - begin)
 
@@ -49,20 +49,26 @@ print('Tiempo de atribución del modelo: ', time.time() - begin)
 modelo_smt = PySMTModel(modelo)
 modelo_smt.generate_model()
 
+begin = time.time()
+
 # Todas
 # results = check_configs(modelo_smt)
 
 # Filtrando
-# results = check_configs(modelo_smt, impact_threshold = 3)
+results = check_configs(modelo_smt, impact_threshold = 2.)
 
 # Priorizando
-results = check_configs(modelo_smt, sorted = True)
+# results = check_configs(modelo_smt, sorted = True)
 
 # Filtrando y Priorizando
 # results = check_configs(modelo_smt, impact_threshold = 3, sorted = True)
 
-for result in results:
-    print(result)
+# for result in results:
+#     print(result)
+
+print('Tiempo de realización de la operación: ', time.time() - begin)
+
+print(len(results))
 
 # print('Vulnerabilidades extraidas para las dependencias: ')
 
