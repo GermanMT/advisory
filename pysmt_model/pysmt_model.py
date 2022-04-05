@@ -1,6 +1,6 @@
 from model.model import Model
 
-from pysmt.shortcuts import  Equals, GT, LT, GE, LE, NotEquals, Symbol, And, Or, Int, Not, Real, Div, Plus
+from pysmt.shortcuts import  Equals, GT, LT, GE, LE, NotEquals, Symbol, And, Or, Int, Real, Div, Plus, Implies
 from pysmt.typing import INT, REAL
 
 from re import sub
@@ -53,14 +53,27 @@ class PySMTModel():
 
             p_domain = self.add_problems(var, package.parent_relationship.constraints)
 
-            _domains = [Or(p_vars), And(p_cvss)]
-            _domains.extend(all_p_cves)
-            _domains.extend(p_domain)
+            sub_domain = [Or(p_vars), And(p_cvss)]
+            sub_domain.extend(all_p_cves)
+            sub_domain.extend(p_domain)
 
-            self.domains.append(And(_domains))
+            # print('************')
+            # print(Or(p_vars))
+            # print('------------')
+            # print(And(p_cvss))
+            # print('------------')
+            # print(all_p_cves)
+            # print('------------')
+            # print(p_domain)
+            # print('------------')
+            # print(And(sub_domain))
+
+            self.domains.append(And(sub_domain))
 
         div = self.division(CVSSs.values())
         self.domains.append(Equals(CVSSt, div))
+
+        print(self.domains)
 
         return self
 
@@ -78,7 +91,7 @@ class PySMTModel():
             all_p_cves.extend(p_cves.values())
 
             v_impact = self.division(p_cves.keys()) if version.cves else Real(0.)
-            ctc = [Not(Equals(var, Int(trans_ver))),Equals(part_cvss, v_impact)]
+            ctc = Implies(Equals(var, Int(trans_ver)), Equals(part_cvss, v_impact))
             p_cvss.append(Or(ctc))
 
         return (all_p_cves, p_vars, p_cvss)
