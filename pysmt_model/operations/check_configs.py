@@ -1,26 +1,42 @@
-from pysmt.shortcuts import Solver, And, EqualsOrIff, Not, LE, Real
-from pysmt.oracles import get_logic
+from z3 import And, Or, Solver, Optimize, sat
 
 from pysmt_model.pysmt_model import PySMTModel
 
 
-def check_configs(smt_model: PySMTModel, impact_threshold: float = 10., sorted: bool = False) -> None:
+def check_configs(
+    smt_model: PySMTModel, 
+    impact_threshold: float = 10., 
+    minimize: bool = False,
+    maximize: bool = False,
+    limit: int = 100000000
+    ) -> None:
+
     results = list()
     CVSSt = smt_model.vars[0]
 
-    threshold_ctc = LE(CVSSt, Real(impact_threshold))
+    threshold_ctc = CVSSt <= impact_threshold
     smt_model.domains.append(threshold_ctc)
 
+    if minimize:
+        solver = Optimize()
+        solver.minimize(CVSSt)
+    elif maximize:
+        solver = Optimize()
+        solver.maximize(CVSSt)
+    else:
+        solver = Solver()
+
     formula = And(smt_model.domains)
-    target_logic = get_logic(formula)
-    with Solver(logic = target_logic, name = 'z3') as solver:
-        solver.add_assertion(formula)
-        while solver.solve():
-            config = [EqualsOrIff(key, solver.get_value(key)) for key in smt_model.vars]
+    solver.add(formula)
+    while solver.check() == sat and len(results) < limit:
+        config = solver.model()
+        results.append(config)
 
-            solver.add_assertion(Not(And(config)))
+        block = list()
+        for var in config: # var is a declaration of a smt variable
+            c = var() # create a constant from declaration
+            block.append(c != config[var])
 
-            results.append(config)
-            print(config)
+        solver.add(Or(block))
 
     return results

@@ -1,7 +1,8 @@
 from model.model import Model
 
-from pysmt.shortcuts import  Equals, GT, LT, GE, LE, NotEquals, Symbol, And, Or, Int, Real, Div, Plus, Implies
-from pysmt.typing import INT, REAL
+from z3 import And, Or, Int, Real, Implies
+
+from operator import eq, gt, lt, ge, le, ne
 
 from re import sub
 
@@ -14,15 +15,15 @@ class PySMTModel():
         self.vars = list()
         self.impacts = list()
         self.__ops = {
-            '=': Equals,
-            '>': GT,
-            '<': LT,
-            '>=': GE,
-            '<=': LE,
-            '!=': NotEquals,
-            '~>': GE,
-            '^': GE,
-            '~': GE
+            '=': eq,
+            '>': gt,
+            '<': lt,
+            '>=': ge,
+            '<=': le,
+            '!=': ne,
+            '~>': ge,
+            '^': ge,
+            '~': ge
             }
 
     ''' 
@@ -34,16 +35,16 @@ class PySMTModel():
         NOT(A OR  B) = NOT(A) AND NOT(B)
     '''
     def generate_model(self) -> 'PySMTModel':
-        CVSSt = Symbol('CVSSt', REAL)
+        CVSSt = Real('CVSSt')
         self.vars.append(CVSSt)
         CVSSs = dict()
 
         for package in self.model.packages:
             name = 'CVSS' + package.pkg_name
-            CVSSs[name] = Symbol(name, REAL)
+            CVSSs[name] = Real(name)
             self.vars.append(CVSSs[name])
 
-            var = Symbol(package.pkg_name, INT)
+            var = Int(package.pkg_name)
             self.vars.append(var)
 
             versions = list()
@@ -70,10 +71,8 @@ class PySMTModel():
 
             self.domains.append(And(sub_domain))
 
-        div = self.division(CVSSs.values())
-        self.domains.append(Equals(CVSSt, div))
-
-        print(self.domains)
+        p_impact = self.division(CVSSs.values())
+        self.domains.append(eq(CVSSt, p_impact))
 
         return self
 
@@ -84,14 +83,13 @@ class PySMTModel():
 
         for version in versions:
             trans_ver = self.transform(version.ver_name)
-
-            p_vars.append(Equals(var, Int(trans_ver)))
+            p_vars.append(var == trans_ver)
 
             p_cves = self.add_cves(version)
-            all_p_cves.extend(p_cves.values())
+            all_p_cves.extend([p_cve == p_cves[p_cve] for p_cve in p_cves])
 
-            v_impact = self.division(p_cves.keys()) if version.cves else Real(0.)
-            ctc = Implies(Equals(var, Int(trans_ver)), Equals(part_cvss, v_impact))
+            v_impact = self.division(p_cves.keys()) if version.cves else 0.
+            ctc = Implies(var == trans_ver, part_cvss == v_impact)
             p_cvss.append(Or(ctc))
 
         return (all_p_cves, p_vars, p_cvss)
@@ -99,17 +97,13 @@ class PySMTModel():
     def add_cves(self, version) -> dict:
         p_cves = dict()
 
-        for cve in version.cves:
-            cve_var = Symbol(cve.id, REAL)
-            self.vars.append(cve_var)
-            cve_val = Equals(cve_var, Real(cve.cvss.impact_score))
-            p_cves[cve_var] = cve_val
+        [p_cves.update({Real(cve.id): float(cve.cvss.impact_score)}) for cve in version.cves]
 
         return p_cves
 
     @staticmethod
-    def division(problem) -> Div:
-        return Div(Plus(problem), Real(len(problem)))
+    def division(problem) -> float:
+        return sum(problem) / len(problem)
 
     ''' Transforma las versiones en un entero '''
     @staticmethod
@@ -129,12 +123,16 @@ class PySMTModel():
         return version
 
     ''' Crea las restricciones para el modelo smt '''
-    def add_problems(self, var: Symbol, constrains: list) -> list:
+    def add_problems(self, var: Int, constrains: list) -> list:
         problems_ = list()
 
         for constraint in constrains:
+            signature = constraint.signature
+            if signature.__contains__('Any'):
+                continue
+
             parts = constraint.signature.split(' ')
-            problem_ = self.__ops[parts[0]](var, Int(self.transform(parts[1])))
+            problem_ = self.__ops[parts[0]](var, self.transform(parts[1]))
             problems_.append(problem_)
 
         return problems_

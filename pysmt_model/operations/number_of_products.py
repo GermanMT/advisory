@@ -1,16 +1,22 @@
-from pysmt.shortcuts import  Symbol, And, EqualsOrIff, Solver, Not
-from pysmt.oracles import get_logic
+from z3 import And, Or, Solver, sat
+
+from pysmt_model.pysmt_model import PySMTModel
 
 
-def number_of_products(semi_formula, keys: list[Symbol]) -> None:
+def number_of_products(smt_model: PySMTModel) -> None:
     i = 0
-    formula = And(semi_formula)
-    target_logic = get_logic(formula)
-    with Solver(logic = target_logic, name = 'z3') as solver:
-        solver.add_assertion(formula)
-        while solver.solve():
-            partial_model = [EqualsOrIff(k, solver.get_value(k)) for k in keys]
-            solver.add_assertion(Not(And(partial_model)))
-            i += 1
+    formula = And(smt_model.domains)
+    solver = Solver()
+    solver.add(formula)
+    while solver.check() == sat:
+        config = solver.model()
+
+        block = list()
+        for var in config:
+            c = var()
+            block.append(c != config[var])
+
+        solver.add(Or(block))
+        i += 1
 
     return i

@@ -1,10 +1,10 @@
-from pysmt.shortcuts import Solver, And
-from pysmt.oracles import get_logic
+from z3 import And, Solver, sat
+
+from pysmt_model.pysmt_model import PySMTModel
 
 
-def valid_model(domains) -> None:
-    formula = And(domains)
-    target_logic = get_logic(formula)
-    with Solver(logic = target_logic, name = 'z3') as solver:
-        solver.add_assertion(formula)
-        return solver.solve()
+def valid_model(smt_model: PySMTModel) -> None:
+    formula = And(smt_model.domains)
+    solver = Solver()
+    solver.add(formula)
+    return solver.check() == sat
