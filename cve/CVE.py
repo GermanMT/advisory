@@ -1,5 +1,6 @@
 from cve.CVSS import CVSS
 
+
 class CVE:
     
     def __init__(

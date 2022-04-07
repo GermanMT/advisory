@@ -103,14 +103,13 @@ class Model:
 
     def generate_model(
         self,
-        name_with_owner: str,
         parent: 'Package'
     ) -> None:
 
         if parent.level >= self.total_level - 1:
             return ''
 
-        dependencies = get_dependencies(name_with_owner)
+        dependencies = get_dependencies(parent.name_with_owner)
 
         new_packages = list()
 
@@ -135,7 +134,7 @@ class Model:
             parent.child_relationhips.append(new_relationship)
 
         for package in new_packages:
-            self.generate_model(package.name_with_owner, package)
+            self.generate_model(package)
 
     def add_package(
         self,

@@ -24,7 +24,10 @@ def get_all_versions(pkg_name: str) -> list[str]:
         for item in releases[release]:
             release_date = item['upload_time']
 
-        versions[release] = release_date
+        aux = release.replace('.', '')
+
+        if aux.isdigit():
+            versions[release] = release_date
 
     return versions
 

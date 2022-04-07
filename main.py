@@ -24,19 +24,19 @@ root = Package(
     'None',
     'None',
     True,
-    [],
-    'GermanMT/prueba2'
+    'pyca/cryptography',
+    []
 )
 
 begin = time.time()
 
 modelo = Model(root, 2)
-modelo.generate_model('GermanMT/prueba2', root)
-
-print('Tiempo de construcción del modelo: ', time.time() - begin)
+modelo.generate_model(root)
 
 print('Grafo de dependencias de MiProyecto: ')
 print(modelo)
+
+print('Tiempo de construcción del modelo: ', time.time() - begin)
 
 begin = time.time()
 
@@ -52,29 +52,33 @@ modelo_smt.generate_model()
 begin = time.time()
 
 # Todas
-# results = check_configs(modelo_smt)
+# results = check_configs(modelo_smt, limit = 10)
 
 # Filtrando
-results = check_configs(modelo_smt, impact_threshold = 2.)
+results = check_configs(modelo_smt, impact_threshold = 0., limit = 1000)
 
-# Priorizando
-# results = check_configs(modelo_smt, sorted = True)
+# Minimizando
+# results = check_configs(modelo_smt, minimize = True)
 
-# Filtrando y Priorizando
-# results = check_configs(modelo_smt, impact_threshold = 3, sorted = True)
+# Maximizando
+# results = check_configs(modelo_smt, maximize = True)
+
+# Filtrando y maximizando
+# results = check_configs(modelo_smt, impact_threshold = 2., maximize = True)
+
+# Filtrando y minimizando
+# results = check_configs(modelo_smt, impact_threshold = 2., minimize = True)
 
 # for result in results:
 #     print(result)
 
-print('Tiempo de realización de la operación: ', time.time() - begin)
+# print('Tiempo de realización de la operación: ', time.time() - begin)
 
 print(len(results))
 
 # print('Vulnerabilidades extraidas para las dependencias: ')
 
-# begin = time.time()
 # for package in modelo.packages:
-#     time.sleep(10)
 #     print(package.pkg_name)
 #     if package.versions:
 #         print(package.versions)
@@ -89,5 +93,3 @@ print(len(results))
 #         print('CVSS: ')
 #         print('Vector: ', cve.cvss.vector_string)
 #     print('\n')
-
-# print('Tiempo de de extración cves: ', time.time() - begin)
