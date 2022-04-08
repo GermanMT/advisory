@@ -11,11 +11,15 @@ def check_configs(
     limit: int = 100000000
     ) -> None:
 
+    ''' Arreglar que si el paquete no tiene dependencias te devuelve CVSSt = 0 como única configuración '''
+
     results = list()
     CVSSt = smt_model.vars[0]
 
     threshold_ctc = CVSSt <= impact_threshold
-    smt_model.domains.append(threshold_ctc)
+    _domains = list()
+    _domains.extend(smt_model.domains)
+    _domains.append(threshold_ctc)
 
     if minimize:
         solver = Optimize()
@@ -26,7 +30,7 @@ def check_configs(
     else:
         solver = Solver()
 
-    formula = And(smt_model.domains)
+    formula = And(_domains)
     solver.add(formula)
     while solver.check() == sat and len(results) < limit:
         config = solver.model()

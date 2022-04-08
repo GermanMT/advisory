@@ -20,11 +20,11 @@ TODO:
 
 root = Package(
             0,
-            'setuptools',
+            'dateutil',
             'None',
             'None',
             True,
-            'pypa/setuptools',
+            'dateutil/dateutil',
             []
         )
 
@@ -51,30 +51,62 @@ modelo_smt.generate_model()
 
 begin = time.time()
 
-# Todas
-# results = check_configs(modelo_smt, limit = 10)
+# Filtrando menor 0.0
+results_1 = check_configs(modelo_smt, impact_threshold = 0., limit = 1000)
+print(
+    'Número configuraciones con impacto menor que 0.0: ',
+    '+' if len(results_1) == 1000 else '',
+    len(results_1),
+    '\n'
+)
+
+print('Tiempo de realización de la operación: ', time.time() - begin, '\n')
+
+begin = time.time()
+
+# Filtrando menor 2.5
+results_2 = check_configs(modelo_smt, impact_threshold = 2.5, limit = 1000)
+print(
+    'Número configuraciones con impacto menor que 2.5: ',
+    '+' if len(results_2) == 1000 else '',
+    len(results_2),
+    '\n'
+)
+
+print('Tiempo de realización de la operación: ', time.time() - begin, '\n')
+
+begin = time.time()
+
+# Filtrando menor 5.0
+results_3 = check_configs(modelo_smt, impact_threshold = 5., limit = 1000)
+print(
+    'Número configuraciones con impacto menor que 5.0: ',
+    '+' if len(results_3) == 1000 else '',
+    len(results_3),
+    '\n'
+)
+
+print('Tiempo de realización de la operación: ', time.time() - begin, '\n')
+
+begin = time.time()
+
+# Filtrando menor 10.0
+results_4 = check_configs(modelo_smt, impact_threshold = 10., limit = 1000)
+print(
+    'Número configuraciones con impacto menor que 10.0: ',
+    '+' if len(results_4) == 1000 else '',
+    len(results_4),
+    '\n'
+)
+
+print('Tiempo de realización de la operación: ', time.time() - begin, '\n')
 
 # Filtrando
-results = check_configs(modelo_smt, impact_threshold = 0., limit = 1000)
-
-# Minimizando
-# results = check_configs(modelo_smt, minimize = True)
-
-# Maximizando
-# results = check_configs(modelo_smt, maximize = True)
-
-# Filtrando y maximizando
-# results = check_configs(modelo_smt, impact_threshold = 2., maximize = True)
-
-# Filtrando y minimizando
-# results = check_configs(modelo_smt, impact_threshold = 2., minimize = True)
+# results = check_configs(modelo_smt, impact_threshold = 10., limit = 10)
+# print(len(results))
 
 # for result in results:
 #     print(result)
-
-# print('Tiempo de realización de la operación: ', time.time() - begin)
-
-print(len(results))
 
 # print('Vulnerabilidades extraidas para las dependencias: ')
 

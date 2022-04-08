@@ -24,10 +24,19 @@ def add_cves(package: 'Package') -> None:
         try:
             cvss = get_cvss(cve.impact.baseMetricV3)
         except:
-            cvss = CVSS('', 0, 0, 0, 0, 0, 0, 0)
+            cvss = CVSS('None', None, None, None, None, None, None, None)
 
         new_cve = CVE(id, 'nvd', description, cpes, cvss)
+
         if package.get_cve(id) == None:
+            for parent in package.versions:
+                for version in package.versions[parent]:
+                    have_version = False
+                    for cpe in cpes:
+                        if cpe.__contains__(version.ver_name):
+                            have_version = True
+                    if have_version:
+                        version.cves.append(new_cve)
             package.cves.append(new_cve)
 
 def get_cvss(baseMetricV3: dict) -> 'CVSS':

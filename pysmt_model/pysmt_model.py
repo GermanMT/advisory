@@ -74,6 +74,8 @@ class PySMTModel():
         p_impact = self.division(CVSSs.values())
         self.domains.append(eq(CVSSt, p_impact))
 
+        ''' Arreglar generacion de variables CVE repetidas '''
+
         return self
 
     def add_versions(self, versions, var, part_cvss) -> None:
@@ -97,7 +99,14 @@ class PySMTModel():
     def add_cves(self, version) -> dict:
         p_cves = dict()
 
-        [p_cves.update({Real(cve.id): float(cve.cvss.impact_score)}) for cve in version.cves]
+        for cve in version.cves:
+            p_cves_names = [str(p_cve) for p_cve in p_cves]
+
+            if cve.id not in p_cves_names:
+                p_cve = Real(cve.id)
+
+            if cve.cvss.impact_score:
+                p_cves[p_cve] = float(cve.cvss.impact_score)
 
         return p_cves
 
