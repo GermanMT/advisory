@@ -19,14 +19,14 @@ TODO:
 '''
 
 root = Package(
-    0,
-    'MiProyecto',
-    'None',
-    'None',
-    True,
-    'pyca/cryptography',
-    []
-)
+            0,
+            'setuptools',
+            'None',
+            'None',
+            True,
+            'pypa/setuptools',
+            []
+        )
 
 begin = time.time()
 

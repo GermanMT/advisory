@@ -103,7 +103,7 @@ class PySMTModel():
 
     @staticmethod
     def division(problem) -> float:
-        return sum(problem) / len(problem)
+        return sum(problem) / len(problem) if problem else 0.
 
     ''' Transforma las versiones en un entero '''
     @staticmethod
