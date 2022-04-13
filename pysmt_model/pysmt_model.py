@@ -1,10 +1,12 @@
-from model.model import Model
+from model.model import Model, Version
 
 from z3 import And, Or, Int, Real, Implies
 
 from operator import eq, gt, lt, ge, le, ne
 
 from re import sub
+
+from typing import Union
 
 
 class PySMTModel():
@@ -26,14 +28,6 @@ class PySMTModel():
             '~': ge
             }
 
-    ''' 
-    Con el metamodelo construido lo transformamos en un modelo PySMT
-    Reglas de las leyes de Morgan:
-        A <=> B      = (A => B) AND (B => A)
-        A  => B      = NOT(A) OR  B
-        NOT(A AND B) = NOT(A) OR  NOT(B)
-        NOT(A OR  B) = NOT(A) AND NOT(B)
-    '''
     def generate_model(self) -> 'PySMTModel':
         CVSSt = Real('CVSSt')
         self.vars.append(CVSSt)
@@ -58,27 +52,14 @@ class PySMTModel():
             sub_domain.extend(all_p_cves)
             sub_domain.extend(p_domain)
 
-            # print('************')
-            # print(Or(p_vars))
-            # print('------------')
-            # print(And(p_cvss))
-            # print('------------')
-            # print(all_p_cves)
-            # print('------------')
-            # print(p_domain)
-            # print('------------')
-            # print(And(sub_domain))
-
             self.domains.append(And(sub_domain))
 
         p_impact = self.division(CVSSs.values())
         self.domains.append(eq(CVSSt, p_impact))
 
-        ''' Arreglar generacion de variables CVE repetidas '''
-
         return self
 
-    def add_versions(self, versions, var, part_cvss) -> None:
+    def add_versions(self, versions: list[Version], var: Int, part_cvss: Real) -> tuple[list, list, list]:
         all_p_cves = list()
         p_vars = list()
         p_cvss = list()
@@ -88,7 +69,12 @@ class PySMTModel():
             p_vars.append(var == trans_ver)
 
             p_cves = self.add_cves(version)
-            all_p_cves.extend([p_cve == p_cves[p_cve] for p_cve in p_cves])
+            
+            exprs = [p_cve == p_cves[p_cve] for p_cve in p_cves]
+
+            for expr in exprs:
+                if expr not in all_p_cves:
+                    all_p_cves.append(expr)
 
             v_impact = self.division(p_cves.keys()) if version.cves else 0.
             ctc = Implies(var == trans_ver, part_cvss == v_impact)
@@ -96,14 +82,17 @@ class PySMTModel():
 
         return (all_p_cves, p_vars, p_cvss)
 
-    def add_cves(self, version) -> dict:
+    def add_cves(self, version: Version) -> dict[Real, float]:
         p_cves = dict()
 
         for cve in version.cves:
-            p_cves_names = [str(p_cve) for p_cve in p_cves]
 
-            if cve.id not in p_cves_names:
+            old_p_cve = self.get_var(cve.id)
+
+            if not old_p_cve:
                 p_cve = Real(cve.id)
+            else:
+                p_cve = old_p_cve
 
             if cve.cvss.impact_score:
                 p_cves[p_cve] = float(cve.cvss.impact_score)
@@ -145,3 +134,8 @@ class PySMTModel():
             problems_.append(problem_)
 
         return problems_
+
+    def get_var(self, name: str) -> Union[Real, Int]:
+        for var in self.vars:
+            if str(var) == name:
+                return var

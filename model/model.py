@@ -106,7 +106,7 @@ class Model:
         parent: 'Package'
     ) -> None:
 
-        if parent.level >= self.total_level - 1:
+        if parent.level >= self.total_level:
             return ''
 
         dependencies = get_dependencies(parent.name_with_owner)
@@ -196,7 +196,8 @@ class Model:
         model_str += 'Packages: \n'
         i = 0
         for pkg in self.packages:
-            model_str += f'Package{i}: {pkg.pkg_name}: {pkg.versions} \n'
+            versions = [{parent: str(pkg.versions[parent]) + ' -> ' +str(len(pkg.versions[parent]))} for parent in pkg.versions]
+            model_str += f'Package{i}: {pkg.pkg_name}: {versions} \n'
             i += 1
 
         model_str += '\n'
