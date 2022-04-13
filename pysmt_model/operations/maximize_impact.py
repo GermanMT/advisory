@@ -1,0 +1,39 @@
+from z3 import And, Or, Optimize, sat
+
+from pysmt_model.pysmt_model import PySMTModel
+
+import sys
+
+
+def maximize_impacts(
+    smt_model: PySMTModel,
+    limit: int = sys.maxsize
+    ) -> None:
+
+    results = list()
+    CVSSt = smt_model.vars[0]
+
+    _domains = list()
+    _domains.extend(smt_model.domains)
+
+    if len(smt_model.vars) == 1:
+        threshold_ctc = CVSSt != 0
+        _domains.append(threshold_ctc)
+
+    solver = Optimize()
+    solver.maximize(CVSSt)
+
+    formula = And(_domains)
+    solver.add(formula)
+    while solver.check() == sat and len(results) < limit:
+        config = solver.model()
+        results.append(config)
+
+        block = list()
+        for var in config: # var is a declaration of a smt variable
+            c = var() # create a constant from declaration
+            block.append(c != config[var])
+
+        solver.add(Or(block))
+
+    return results
