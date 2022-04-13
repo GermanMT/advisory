@@ -29,33 +29,34 @@ class PySMTModel():
             }
 
     def generate_model(self) -> 'PySMTModel':
-        CVSSt = Real('CVSSt')
-        self.vars.append(CVSSt)
-        CVSSs = dict()
+        if self.model.packages:
+            CVSSt = Real('CVSSt')
+            self.vars.append(CVSSt)
+            CVSSs = dict()
 
-        for package in self.model.packages:
-            name = 'CVSS' + package.pkg_name
-            CVSSs[name] = Real(name)
-            self.vars.append(CVSSs[name])
+            for package in self.model.packages:
+                name = 'CVSS' + package.pkg_name
+                CVSSs[name] = Real(name)
+                self.vars.append(CVSSs[name])
 
-            var = Int(package.pkg_name)
-            self.vars.append(var)
+                var = Int(package.pkg_name)
+                self.vars.append(var)
 
-            versions = list()
-            [versions.extend(package.versions[parent_name]) for parent_name in package.versions]
+                versions = list()
+                [versions.extend(package.versions[parent_name]) for parent_name in package.versions]
 
-            all_p_cves, p_vars, p_cvss = self.add_versions(versions, var, CVSSs[name])
+                all_p_cves, p_vars, p_cvss = self.add_versions(versions, var, CVSSs[name])
 
-            p_domain = self.add_problems(var, package.parent_relationship.constraints)
+                p_domain = self.add_problems(var, package.parent_relationship.constraints)
 
-            sub_domain = [Or(p_vars), And(p_cvss)]
-            sub_domain.extend(all_p_cves)
-            sub_domain.extend(p_domain)
+                sub_domain = [Or(p_vars), And(p_cvss)]
+                sub_domain.extend(all_p_cves)
+                sub_domain.extend(p_domain)
 
-            self.domains.append(And(sub_domain))
+                self.domains.append(And(sub_domain))
 
-        p_impact = self.division(CVSSs.values())
-        self.domains.append(eq(CVSSt, p_impact))
+            p_impact = self.division(CVSSs.values())
+            self.domains.append(eq(CVSSt, p_impact))
 
         return self
 
