@@ -5,23 +5,20 @@ from pysmt_model.pysmt_model import PySMTModel
 import sys
 
 
-def maximize_impacts(
+def maximize_impact(
     smt_model: PySMTModel,
     limit: int = sys.maxsize
     ) -> None:
 
     results = list()
-    CVSSt = smt_model.vars[0]
 
     _domains = list()
     _domains.extend(smt_model.domains)
 
-    if len(smt_model.vars) == 1:
-        threshold_ctc = CVSSt != 0
-        _domains.append(threshold_ctc)
-
     solver = Optimize()
-    solver.maximize(CVSSt)
+    if smt_model.vars:
+        CVSSt = smt_model.vars[0]
+        solver.maximize(CVSSt)
 
     formula = And(_domains)
     solver.add(formula)
