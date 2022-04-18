@@ -11,9 +11,9 @@ from experiments.experiment_maximize import experiment_maximize
 from experiments.experiment_minimize import experiment_minimize
 
 
-# experiment_graph()
+experiment_graph()
 # time.sleep(10)
-experiment_filter()
+# experiment_filter()
 # time.sleep(10)
 # experiment_maximize()
 # time.sleep(10)

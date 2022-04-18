@@ -1,7 +1,7 @@
 from model.model import Model
 from model.model import Package
 from model.utils.other.add_cves import add_cves
-from pysmt_model.operations.check_configs import check_configs
+from pysmt_model.operations import *
 
 from pysmt_model.pysmt_model import PySMTModel
 from pysmt_model.operations import *
@@ -20,21 +20,21 @@ TODO:
 
 root = Package(
             0,
-            'dateutil',
+            'MiProyecto',
             'None',
             'None',
             True,
-            'dateutil/dateutil',
+            'GermanMT/cryptography',
             []
         )
 
 begin = time.time()
 
-modelo = Model(root, 2)
+modelo = Model(root, 1)
 modelo.generate_model(root)
 
-print('Grafo de dependencias de MiProyecto: ')
-print(modelo)
+# print('Grafo de dependencias de MiProyecto: ')
+# print(modelo)
 
 print('Tiempo de construcción del modelo: ', time.time() - begin)
 
@@ -49,79 +49,92 @@ print('Tiempo de atribución del modelo: ', time.time() - begin)
 modelo_smt = PySMTModel(modelo)
 modelo_smt.generate_model()
 
-begin = time.time()
+# results = filter_configs(modelo_smt)
+# print(
+#     'Número configuraciones: ',
+#     '+' if len(results) == 1000 else '',
+#     len(results),
+#     '\n'
+# )
 
-# Filtrando menor 0.0
-results_1 = check_configs(modelo_smt, impact_threshold = 0., limit = 1000)
-print(
-    'Número configuraciones con impacto menor que 0.0: ',
-    '+' if len(results_1) == 1000 else '',
-    len(results_1),
-    '\n'
-)
+# results = minimize_impact(modelo_smt, limit = 1)
+# print(results)
 
-print('Tiempo de realización de la operación: ', time.time() - begin, '\n')
+# results = maximize_impact(modelo_smt, limit = 1)
+# print(results)
 
-begin = time.time()
+# results_1 = check_configs(modelo_smt, max_threshold = 2.5, limit = 1000)
+# print(
+#     'Número configuraciones con impacto entre 0.0 y 2.5: ',
+#     '+' if len(results_1) == 1000 else '',
+#     len(results_1),
+#     '\n'
+# )
 
-# Filtrando menor 2.5
-results_2 = check_configs(modelo_smt, impact_threshold = 2.5, limit = 1000)
-print(
-    'Número configuraciones con impacto menor que 2.5: ',
-    '+' if len(results_2) == 1000 else '',
-    len(results_2),
-    '\n'
-)
+# # Filtrando entre 2.5 y 5.0
+# results_2 = check_configs(modelo_smt, max_threshold = 5.0, min_threshold = 2.5, limit = 1000)
+# print(
+#     'Número configuraciones con impacto entre 2.5 y 5.0: ',
+#     '+' if len(results_2) == 1000 else '',
+#     len(results_2),
+#     '\n'
+# )
 
-print('Tiempo de realización de la operación: ', time.time() - begin, '\n')
+# # Filtrando entre 5.0 y 7.5
+# results_3 = check_configs(modelo_smt, max_threshold = 7.5, min_threshold = 5.0, limit = 1000)
+# print(
+#     'Número configuraciones con impacto entre 5.0 y 7.5: ',
+#     '+' if len(results_3) == 1000 else '',
+#     len(results_3),
+#     '\n'
+# )
 
-begin = time.time()
+# # Filtrando entre 7.5 y 10.0
+# results_4 = check_configs(modelo_smt, min_threshold = 7.5, limit = 1000)
+# print(
+#     'Número configuraciones con impacto entre 7.5 y 10.0: ',
+#     '+' if len(results_4) == 1000 else '',
+#     len(results_4),
+#     '\n'
+# )
 
-# Filtrando menor 5.0
-results_3 = check_configs(modelo_smt, impact_threshold = 5., limit = 1000)
-print(
-    'Número configuraciones con impacto menor que 5.0: ',
-    '+' if len(results_3) == 1000 else '',
-    len(results_3),
-    '\n'
-)
+# results_1 = check_configs(modelo_smt, maximize = True, limit = 1000)
 
-print('Tiempo de realización de la operación: ', time.time() - begin, '\n')
+# groups = dict()
 
-begin = time.time()
+# for result in results_1:
+#     for var in result:
+#         if str(var) == 'CVSSt':
+#             impact = result[var]
+#             if impact not in groups:
+#                 groups[impact] = 1
+#             else:
+#                 groups[impact] += 1
 
-# Filtrando menor 10.0
-results_4 = check_configs(modelo_smt, impact_threshold = 10., limit = 1000)
-print(
-    'Número configuraciones con impacto menor que 10.0: ',
-    '+' if len(results_4) == 1000 else '',
-    len(results_4),
-    '\n'
-)
-
-print('Tiempo de realización de la operación: ', time.time() - begin, '\n')
-
-# Filtrando
-# results = check_configs(modelo_smt, impact_threshold = 10., limit = 10)
-# print(len(results))
-
-# for result in results:
-#     print(result)
+# print(groups)
 
 # print('Vulnerabilidades extraidas para las dependencias: ')
 
-# for package in modelo.packages:
-#     print(package.pkg_name)
-#     if package.versions:
-#         print(package.versions)
-#         add_cves(package)
+cves = list()
+for package in modelo.packages:
+    # if package.versions:
+    #     print(package.versions)
+    #     add_cves(package)
 
-#     for cve in package.cves:
-#         print('*******************')
-#         print('CVE: ')
-#         print('ID: ', cve.id)
-#         print('Descripcion: ', cve.description)
-#         print('')
-#         print('CVSS: ')
-#         print('Vector: ', cve.cvss.vector_string)
-#     print('\n')
+    for parent in package.versions:
+        for version in package.versions[parent]:
+            # print(version.ver_name)
+            # print(len(version.cves))
+            for cve in version.cves:
+            # #     print('*******************')
+                # print('CVE: ')
+                # print(cve.id)
+                cves.append(cve.id)
+            #     print('Descripcion: ', cve.description)
+            #     print('')
+            #     print('CVSS: ')
+            #     print('Vector: ', cve.cvss.vector_string)
+            # print('\n')
+
+print(set(cves))
+print('Número de CVEs detectados: ', len(set(cves)))

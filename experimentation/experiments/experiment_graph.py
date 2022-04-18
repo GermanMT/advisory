@@ -28,15 +28,9 @@ def experiment_graph():
 
         begin = time.time()
 
-        num_cves = 0
-
-        for package in modelo.packages:
-            if package.versions:
-                add_cves(package)
-            num_cves += len(package.cves)
-
-        file.write('Numero de CVEs asociados al grafo: ' +  str(num_cves) + '\n')
-        file.write('\n')
+        for package_ in modelo.packages:
+            if package_.versions:
+                add_cves(package_)
             
         file.write('Tiempo de atribucion del grafo: ' + str(time.time() - begin) + '\n')
         file.write('\n')
@@ -44,15 +38,15 @@ def experiment_graph():
         file.write('Asociacion de CVE:\n')
         file.write('\n')
 
+        cves = set()
         for package in modelo.packages:
-            file.write('\n')
-            file.write('Numero de CVE asociados a la dependencia' + package.pkg_name + ': ' + str(len(package.cves)) + '\n')
-
-            file.write('{\n')
             for parent in package.versions:
                 for version in package.versions[parent]:
-                    file.write('Numero de CVE asociados a la version' + version.ver_name +': ' + str(len(version.cves)) + '\n')
-            file.write('}\n')
+                    for cve in version.cves:
+                        cves.add(cve.id)
+
+        file.write('Numero de CVE asociados al grafo: ' + str(len(cves)) + '\n')
+        file.write('\n')
 
         file.write('-' * 25 + '\n')
     
