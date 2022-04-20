@@ -16,6 +16,7 @@ class PySMTModel():
         self.domains = list()
         self.vars = list()
         self.impacts = list()
+        self.versions = dict()
         self.__ops = {
             '=': eq,
             '>': gt,

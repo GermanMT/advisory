@@ -24,7 +24,7 @@ root = Package(
             'None',
             'None',
             True,
-            'GermanMT/cryptography',
+            'GermanMT/urllib3',
             []
         )
 
@@ -57,8 +57,8 @@ modelo_smt.generate_model()
 #     '\n'
 # )
 
-# results = minimize_impact(modelo_smt, limit = 1)
-# print(results)
+results = minimize_impact(modelo_smt, limit = 1)
+print(results)
 
 # results = maximize_impact(modelo_smt, limit = 1)
 # print(results)
@@ -115,26 +115,26 @@ modelo_smt.generate_model()
 
 # print('Vulnerabilidades extraidas para las dependencias: ')
 
-cves = list()
-for package in modelo.packages:
-    # if package.versions:
-    #     print(package.versions)
-    #     add_cves(package)
+# cves = list()
+# for package in modelo.packages:
+#     # if package.versions:
+#     #     print(package.versions)
+#     #     add_cves(package)
 
-    for parent in package.versions:
-        for version in package.versions[parent]:
-            # print(version.ver_name)
-            # print(len(version.cves))
-            for cve in version.cves:
-            # #     print('*******************')
-                # print('CVE: ')
-                # print(cve.id)
-                cves.append(cve.id)
-            #     print('Descripcion: ', cve.description)
-            #     print('')
-            #     print('CVSS: ')
-            #     print('Vector: ', cve.cvss.vector_string)
-            # print('\n')
+#     for parent in package.versions:
+#         for version in package.versions[parent]:
+#             # print(version.ver_name)
+#             # print(len(version.cves))
+#             for cve in version.cves:
+#             # #     print('*******************')
+#                 # print('CVE: ')
+#                 # print(cve.id)
+#                 cves.append(cve.id)
+#             #     print('Descripcion: ', cve.description)
+#             #     print('')
+#             #     print('CVSS: ')
+#             #     print('Vector: ', cve.cvss.vector_string)
+#             # print('\n')
 
-print(set(cves))
-print('Número de CVEs detectados: ', len(set(cves)))
+# print(set(cves))
+# print('Número de CVEs detectados: ', len(set(cves)))

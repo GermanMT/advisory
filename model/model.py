@@ -48,15 +48,13 @@ class Package:
         self.cves: list['CVE'] = list()
         if parent_relationship: self.generate_versions()
 
-    def generate_versions(self) -> list['Version']:
+    def generate_versions(self) -> None:
         versions_ = get_versions(self.pkg_name, self.parent_relationship)
         parent_name = self.parent_relationship.parent.pkg_name
-        versions = {parent_name: []}
-
-        for ver_name in versions_:
-            versions[parent_name].append(Version(ver_name, versions_[ver_name]))
-
-        return self.versions.update(versions)
+        self.versions = {
+            parent_name: 
+            [Version(version['release'], version['release_date']) for version in versions_]
+        }
 
     def get_cve(
         self,

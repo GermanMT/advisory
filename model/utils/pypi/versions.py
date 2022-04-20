@@ -17,7 +17,7 @@ ops = {
 def get_all_versions(pkg_name: str) -> list[str]:
     url = f'https://pypi.python.org/pypi/{pkg_name}/json'
     releases = get(url).json()['releases']
-    versions = dict()
+    versions = list()
 
     for release in releases:
         release_date = None
@@ -27,7 +27,10 @@ def get_all_versions(pkg_name: str) -> list[str]:
         aux = release.replace('.', '')
 
         if aux.isdigit():
-            versions[release] = release_date
+            versions.append({
+                'release': release,
+                'release_date': release_date
+            })
 
     return versions
 
@@ -59,12 +62,13 @@ def approx_gt_minor(version: str, version_: str) -> bool:
     return parse_version(version) >= parse_version(version_) and parts[1] >= parts_[1]
 
 def get_versions(pkg_name: str, relationhip) -> list[str]:
-    distributions = dict()
+    distributions = list()
 
     all_versions = get_all_versions(pkg_name)
 
     if relationhip:
         for version in all_versions:
+            release = version['release']
             checkers = list()
             for constraint in relationhip.constraints:
                 if constraint.signature.__contains__('Any'):
@@ -72,16 +76,16 @@ def get_versions(pkg_name: str, relationhip) -> list[str]:
 
                 parts = constraint.signature.split(' ')
                 if parts[0] == '~>':
-                    checkers.append(approx_gt(version, parts[1]))
+                    checkers.append(approx_gt(release, parts[1]))
                 elif parts[0] == '^':
-                    checkers.append(approx_gt_minor(version, parts[1]))
+                    checkers.append(approx_gt_minor(release, parts[1]))
                 elif parts[0] == '~':
-                    checkers.append(approx_gt_patch(version, parts[1]))
+                    checkers.append(approx_gt_patch(release, parts[1]))
                 else:
-                    checkers.append(ops[parts[0]](parse_version(version), parse_version(parts[1])))
+                    checkers.append(ops[parts[0]](parse_version(release), parse_version(parts[1])))
 
             if all(checkers):
-                distributions[version] = all_versions[version]
+                distributions.append(version)
     else:
         distributions = all_versions
 
