@@ -49,16 +49,30 @@ print('Tiempo de atribución del modelo: ', time.time() - begin)
 modelo_smt = PySMTModel(modelo)
 modelo_smt.generate_model()
 
-# results = filter_configs(modelo_smt)
-# print(
-#     'Número configuraciones: ',
-#     '+' if len(results) == 1000 else '',
-#     len(results),
-#     '\n'
-# )
+begin = time.time()
 
-results = minimize_impact(modelo_smt, limit = 1)
-print(results)
+results = filter_configs(modelo_smt, limit = 500)
+
+print(time.time() - begin)
+
+# results = minimize_impact(modelo_smt, limit = 10)
+
+# for result in results:
+#     _results = dict()
+
+#     for part in result:
+#         name = str(part)
+#         package = modelo.get_package(name)
+#         if package:
+#             _results[name] = modelo_smt.versions[name][result[part].as_long()]
+#         if str(part) == 'CVSSt':
+#             _results['CVSSt'] = result[part]
+
+#     print('*' * 25)
+#     for _result in _results:
+#         print('-' * 25)
+#         print(_result, ' --> ', _results[_result])
+
 
 # results = maximize_impact(modelo_smt, limit = 1)
 # print(results)
