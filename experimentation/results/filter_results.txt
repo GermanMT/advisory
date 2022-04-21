@@ -1,0 +1,360 @@
+boto3
+Tiempo de transformacion a SMT: 0.12574124336242676
+
+Numero configuraciones con impacto 0.0: +1000
+Tiempo de realizacion de la operacion: 6.9369566440582275
+
+Numero configuraciones con impacto entre 0.0 y 2.5: +1000
+Tiempo de realizacion de la operacion: 7.166870594024658
+
+Numero configuraciones con impacto entre 2.5 y 5.0: 0
+Tiempo de realizacion de la operacion: 0.018786191940307617
+
+Numero configuraciones con impacto entre 5.0 y 7.5: 0
+Tiempo de realizacion de la operacion: 0.01392054557800293
+
+Numero configuraciones con impacto entre 7.5 y 10.0: 0
+Tiempo de realizacion de la operacion: 0.012885808944702148
+-------------------------
+urllib3
+Tiempo de transformacion a SMT: 0.3564291000366211
+
+Numero configuraciones con impacto 0.0: 0
+Tiempo de realizacion de la operacion: 0.02575540542602539
+
+Numero configuraciones con impacto entre 0.0 y 2.5: +1000
+Tiempo de realizacion de la operacion: 7.197744607925415
+
+Numero configuraciones con impacto entre 2.5 y 5.0: 0
+Tiempo de realizacion de la operacion: 0.025314807891845703
+
+Numero configuraciones con impacto entre 5.0 y 7.5: 0
+Tiempo de realizacion de la operacion: 0.023206710815429688
+
+Numero configuraciones con impacto entre 7.5 y 10.0: 0
+Tiempo de realizacion de la operacion: 0.019842863082885742
+-------------------------
+botocore
+Tiempo de transformacion a SMT: 0.21277761459350586
+
+Numero configuraciones con impacto 0.0: +1000
+Tiempo de realizacion de la operacion: 9.546473503112793
+
+Numero configuraciones con impacto entre 0.0 y 2.5: +1000
+Tiempo de realizacion de la operacion: 8.334805965423584
+
+Numero configuraciones con impacto entre 2.5 y 5.0: 0
+Tiempo de realizacion de la operacion: 0.024783849716186523
+
+Numero configuraciones con impacto entre 5.0 y 7.5: 0
+Tiempo de realizacion de la operacion: 0.01784992218017578
+
+Numero configuraciones con impacto entre 7.5 y 10.0: 0
+Tiempo de realizacion de la operacion: 0.017576217651367188
+-------------------------
+setuptools
+Tiempo de transformacion a SMT: 0.0013909339904785156
+
+Numero configuraciones con impacto 0.0: 0
+Tiempo de realizacion de la operacion: 0.036109209060668945
+
+Numero configuraciones con impacto entre 0.0 y 2.5: 0
+Tiempo de realizacion de la operacion: 0.01107478141784668
+
+Numero configuraciones con impacto entre 2.5 y 5.0: 0
+Tiempo de realizacion de la operacion: 0.008311986923217773
+
+Numero configuraciones con impacto entre 5.0 y 7.5: 0
+Tiempo de realizacion de la operacion: 0.008819341659545898
+
+Numero configuraciones con impacto entre 7.5 y 10.0: 0
+Tiempo de realizacion de la operacion: 0.00899958610534668
+-------------------------
+idna
+Tiempo de transformacion a SMT: 4.553794860839844e-05
+
+Numero configuraciones con impacto 0.0: 0
+Tiempo de realizacion de la operacion: 0.022763729095458984
+
+Numero configuraciones con impacto entre 0.0 y 2.5: 0
+Tiempo de realizacion de la operacion: 0.012179374694824219
+
+Numero configuraciones con impacto entre 2.5 y 5.0: 0
+Tiempo de realizacion de la operacion: 0.00834345817565918
+
+Numero configuraciones con impacto entre 5.0 y 7.5: 0
+Tiempo de realizacion de la operacion: 0.009267807006835938
+
+Numero configuraciones con impacto entre 7.5 y 10.0: 0
+Tiempo de realizacion de la operacion: 0.008135557174682617
+-------------------------
+s3transfer
+Tiempo de transformacion a SMT: 0.2316606044769287
+
+Numero configuraciones con impacto 0.0: 0
+Tiempo de realizacion de la operacion: 0.034349679946899414
+
+Numero configuraciones con impacto entre 0.0 y 2.5: +1000
+Tiempo de realizacion de la operacion: 6.922377347946167
+
+Numero configuraciones con impacto entre 2.5 y 5.0: 0
+Tiempo de realizacion de la operacion: 0.04567980766296387
+
+Numero configuraciones con impacto entre 5.0 y 7.5: 0
+Tiempo de realizacion de la operacion: 0.04263448715209961
+
+Numero configuraciones con impacto entre 7.5 y 10.0: 0
+Tiempo de realizacion de la operacion: 0.036331892013549805
+-------------------------
+requests
+Tiempo de transformacion a SMT: 0.2781064510345459
+
+Numero configuraciones con impacto 0.0: +1000
+Tiempo de realizacion de la operacion: 5.766168832778931
+
+Numero configuraciones con impacto entre 0.0 y 2.5: +1000
+Tiempo de realizacion de la operacion: 5.777820110321045
+
+Numero configuraciones con impacto entre 2.5 y 5.0: 0
+Tiempo de realizacion de la operacion: 0.035552263259887695
+
+Numero configuraciones con impacto entre 5.0 y 7.5: 0
+Tiempo de realizacion de la operacion: 0.029380321502685547
+
+Numero configuraciones con impacto entre 7.5 y 10.0: 0
+Tiempo de realizacion de la operacion: 0.02624201774597168
+-------------------------
+six
+Tiempo de transformacion a SMT: 0.04704856872558594
+
+Numero configuraciones con impacto 0.0: 151
+Tiempo de realizacion de la operacion: 0.12992453575134277
+
+Numero configuraciones con impacto entre 0.0 y 2.5: 0
+Tiempo de realizacion de la operacion: 0.010096549987792969
+
+Numero configuraciones con impacto entre 2.5 y 5.0: 0
+Tiempo de realizacion de la operacion: 0.00978398323059082
+
+Numero configuraciones con impacto entre 5.0 y 7.5: 0
+Tiempo de realizacion de la operacion: 0.00983428955078125
+
+Numero configuraciones con impacto entre 7.5 y 10.0: 0
+Tiempo de realizacion de la operacion: 0.00973963737487793
+-------------------------
+typing
+Tiempo de transformacion a SMT: 0.055680036544799805
+
+Numero configuraciones con impacto 0.0: +1000
+Tiempo de realizacion de la operacion: 2.4404678344726562
+
+Numero configuraciones con impacto entre 0.0 y 2.5: 0
+Tiempo de realizacion de la operacion: 0.019620656967163086
+
+Numero configuraciones con impacto entre 2.5 y 5.0: 0
+Tiempo de realizacion de la operacion: 0.014316082000732422
+
+Numero configuraciones con impacto entre 5.0 y 7.5: 0
+Tiempo de realizacion de la operacion: 0.013746500015258789
+
+Numero configuraciones con impacto entre 7.5 y 10.0: 0
+Tiempo de realizacion de la operacion: 0.013757944107055664
+-------------------------
+python-certifi
+Tiempo de transformacion a SMT: 9.393692016601562e-05
+
+Numero configuraciones con impacto 0.0: 0
+Tiempo de realizacion de la operacion: 0.012590408325195312
+
+Numero configuraciones con impacto entre 0.0 y 2.5: 0
+Tiempo de realizacion de la operacion: 0.008968591690063477
+
+Numero configuraciones con impacto entre 2.5 y 5.0: 0
+Tiempo de realizacion de la operacion: 0.007982254028320312
+
+Numero configuraciones con impacto entre 5.0 y 7.5: 0
+Tiempo de realizacion de la operacion: 0.007805585861206055
+
+Numero configuraciones con impacto entre 7.5 y 10.0: 0
+Tiempo de realizacion de la operacion: 0.007797718048095703
+-------------------------
+dateutil
+Tiempo de transformacion a SMT: 0.5287187099456787
+
+Numero configuraciones con impacto 0.0: 0
+Tiempo de realizacion de la operacion: 0.1333916187286377
+
+Numero configuraciones con impacto entre 0.0 y 2.5: +1000
+Tiempo de realizacion de la operacion: 12.88513731956482
+
+Numero configuraciones con impacto entre 2.5 y 5.0: 0
+Tiempo de realizacion de la operacion: 0.10756659507751465
+
+Numero configuraciones con impacto entre 5.0 y 7.5: 0
+Tiempo de realizacion de la operacion: 0.0993509292602539
+
+Numero configuraciones con impacto entre 7.5 y 10.0: 0
+Tiempo de realizacion de la operacion: 0.09912800788879395
+-------------------------
+aws-cli
+Tiempo de transformacion a SMT: 0.1999359130859375
+
+Numero configuraciones con impacto 0.0: +1000
+Tiempo de realizacion de la operacion: 9.026140689849854
+
+Numero configuraciones con impacto entre 0.0 y 2.5: +1000
+Tiempo de realizacion de la operacion: 7.883422613143921
+
+Numero configuraciones con impacto entre 2.5 y 5.0: 0
+Tiempo de realizacion de la operacion: 0.026805877685546875
+
+Numero configuraciones con impacto entre 5.0 y 7.5: 0
+Tiempo de realizacion de la operacion: 0.020389556884765625
+
+Numero configuraciones con impacto entre 7.5 y 10.0: 0
+Tiempo de realizacion de la operacion: 0.01956462860107422
+-------------------------
+pyyaml
+Tiempo de transformacion a SMT: 0.00018262863159179688
+
+Numero configuraciones con impacto 0.0: 0
+Tiempo de realizacion de la operacion: 0.009746313095092773
+
+Numero configuraciones con impacto entre 0.0 y 2.5: 0
+Tiempo de realizacion de la operacion: 0.008391618728637695
+
+Numero configuraciones con impacto entre 2.5 y 5.0: 0
+Tiempo de realizacion de la operacion: 0.008177995681762695
+
+Numero configuraciones con impacto entre 5.0 y 7.5: 0
+Tiempo de realizacion de la operacion: 0.008344411849975586
+
+Numero configuraciones con impacto entre 7.5 y 10.0: 0
+Tiempo de realizacion de la operacion: 0.007882118225097656
+-------------------------
+charset_normalizer
+Tiempo de transformacion a SMT: 0.2034451961517334
+
+Numero configuraciones con impacto 0.0: +1000
+Tiempo de realizacion de la operacion: 4.690296411514282
+
+Numero configuraciones con impacto entre 0.0 y 2.5: +1000
+Tiempo de realizacion de la operacion: 5.029898166656494
+
+Numero configuraciones con impacto entre 2.5 y 5.0: 0
+Tiempo de realizacion de la operacion: 0.032822608947753906
+
+Numero configuraciones con impacto entre 5.0 y 7.5: 0
+Tiempo de realizacion de la operacion: 0.026920080184936523
+
+Numero configuraciones con impacto entre 7.5 y 10.0: 0
+Tiempo de realizacion de la operacion: 0.025742292404174805
+-------------------------
+wheel
+Tiempo de transformacion a SMT: 0.0002582073211669922
+
+Numero configuraciones con impacto 0.0: 0
+Tiempo de realizacion de la operacion: 0.02136826515197754
+
+Numero configuraciones con impacto entre 0.0 y 2.5: 0
+Tiempo de realizacion de la operacion: 0.008927583694458008
+
+Numero configuraciones con impacto entre 2.5 y 5.0: 0
+Tiempo de realizacion de la operacion: 0.009434700012207031
+
+Numero configuraciones con impacto entre 5.0 y 7.5: 0
+Tiempo de realizacion de la operacion: 0.008349895477294922
+
+Numero configuraciones con impacto entre 7.5 y 10.0: 0
+Tiempo de realizacion de la operacion: 0.01007533073425293
+-------------------------
+click
+Tiempo de transformacion a SMT: 18.500672578811646
+
+Numero configuraciones con impacto 0.0: +1000
+Tiempo de realizacion de la operacion: 17.263476371765137
+
+Numero configuraciones con impacto entre 0.0 y 2.5: +1000
+Tiempo de realizacion de la operacion: 18.993362426757812
+
+Numero configuraciones con impacto entre 2.5 y 5.0: 0
+Tiempo de realizacion de la operacion: 0.029938459396362305
+
+Numero configuraciones con impacto entre 5.0 y 7.5: 0
+Tiempo de realizacion de la operacion: 0.023323774337768555
+
+Numero configuraciones con impacto entre 7.5 y 10.0: 0
+Tiempo de realizacion de la operacion: 0.022000789642333984
+-------------------------
+numpy
+Tiempo de transformacion a SMT: 0.9231336116790771
+
+Numero configuraciones con impacto 0.0: +1000
+Tiempo de realizacion de la operacion: 8.611214637756348
+
+Numero configuraciones con impacto entre 0.0 y 2.5: +1000
+Tiempo de realizacion de la operacion: 9.052100658416748
+
+Numero configuraciones con impacto entre 2.5 y 5.0: 0
+Tiempo de realizacion de la operacion: 0.04426145553588867
+
+Numero configuraciones con impacto entre 5.0 y 7.5: 0
+Tiempo de realizacion de la operacion: 0.03821420669555664
+
+Numero configuraciones con impacto entre 7.5 y 10.0: 0
+Tiempo de realizacion de la operacion: 0.033930063247680664
+-------------------------
+attrs
+Tiempo de transformacion a SMT: 0.00024580955505371094
+
+Numero configuraciones con impacto 0.0: 0
+Tiempo de realizacion de la operacion: 0.0130615234375
+
+Numero configuraciones con impacto entre 0.0 y 2.5: 0
+Tiempo de realizacion de la operacion: 0.00892949104309082
+
+Numero configuraciones con impacto entre 2.5 y 5.0: 0
+Tiempo de realizacion de la operacion: 0.008006095886230469
+
+Numero configuraciones con impacto entre 5.0 y 7.5: 0
+Tiempo de realizacion de la operacion: 0.007998943328857422
+
+Numero configuraciones con impacto entre 7.5 y 10.0: 0
+Tiempo de realizacion de la operacion: 0.007619380950927734
+-------------------------
+cryptography
+Tiempo de transformacion a SMT: 0.047783613204956055
+
+Numero configuraciones con impacto 0.0: +1000
+Tiempo de realizacion de la operacion: 1.438581943511963
+
+Numero configuraciones con impacto entre 0.0 y 2.5: +1000
+Tiempo de realizacion de la operacion: 1.5963363647460938
+
+Numero configuraciones con impacto entre 2.5 y 5.0: 0
+Tiempo de realizacion de la operacion: 0.01776409149169922
+
+Numero configuraciones con impacto entre 5.0 y 7.5: 0
+Tiempo de realizacion de la operacion: 0.013015508651733398
+
+Numero configuraciones con impacto entre 7.5 y 10.0: 0
+Tiempo de realizacion de la operacion: 0.012187480926513672
+-------------------------
+packaging
+Tiempo de transformacion a SMT: 0.035463571548461914
+
+Numero configuraciones con impacto 0.0: +1000
+Tiempo de realizacion de la operacion: 1.5102028846740723
+
+Numero configuraciones con impacto entre 0.0 y 2.5: 0
+Tiempo de realizacion de la operacion: 0.013946533203125
+
+Numero configuraciones con impacto entre 2.5 y 5.0: 0
+Tiempo de realizacion de la operacion: 0.011748075485229492
+
+Numero configuraciones con impacto entre 5.0 y 7.5: 0
+Tiempo de realizacion de la operacion: 0.011050701141357422
+
+Numero configuraciones con impacto entre 7.5 y 10.0: 0
+Tiempo de realizacion de la operacion: 0.010159730911254883
+-------------------------

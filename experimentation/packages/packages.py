@@ -1,0 +1,23 @@
+def all_packages():
+    return [
+        ['boto', 'boto3'],
+        ['urllib3', 'urllib3'],
+        ['boto', 'botocore'],
+        ['pypa', 'setuptools'],
+        ['kjd', 'idna'],
+        ['boto', 's3transfer'],
+        ['psf', 'requests'],
+        ['benjaminp', 'six'],
+        ['python', 'typing'],
+        ['certifi', 'python-certifi'],
+        ['dateutil', 'dateutil'],
+        ['aws', 'aws-cli'],
+        ['yaml', 'pyyaml'],
+        ['Ousret', 'charset_normalizer'],
+        ['pypa', 'wheel'],
+        ['pallets', 'click'],
+        ['numpy', 'numpy'],
+        ['python-attrs', 'attrs'],
+        ['pyca', 'cryptography'],
+        ['pypa', 'packaging']
+    ]
