@@ -1,4 +1,5 @@
-from model.model import Model, Version
+from graph.graph import Graph
+from graph.objects.model.version import Version
 
 from z3 import And, Or, Int, Real, Implies
 
@@ -9,7 +10,7 @@ from typing import Union
 
 class PySMTModel():
 
-    def __init__(self, model: Model) -> None:
+    def __init__(self, model: Graph) -> None:
         self.model = model
         self.domains = list()
         self.vars = list()
