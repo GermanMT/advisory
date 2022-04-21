@@ -1,6 +1,6 @@
-from model.model import Model
-from model.model import Package
-from model.utils.other.add_cves import add_cves
+from graph.graph import Graph
+from graph.graph import Package
+from graph.utils.add_cves import add_cves
 from pysmt_model.operations import *
 
 from pysmt_model.pysmt_model import PySMTModel
@@ -18,20 +18,9 @@ TODO:
 - Optimizar extracción de CVE's
 '''
 
-root = Package(
-            0,
-            'MiProyecto',
-            'None',
-            'None',
-            True,
-            'GermanMT/urllib3',
-            []
-        )
-
 begin = time.time()
 
-modelo = Model(root, 1)
-modelo.generate_model(root)
+modelo = Graph('GermanMT', 'urllib3', 1)
 
 # print('Grafo de dependencias de MiProyecto: ')
 # print(modelo)

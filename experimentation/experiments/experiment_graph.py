@@ -1,5 +1,5 @@
-from model.model import Model
-from model.utils.other.add_cves import add_cves
+from graph.graph import Graph
+from graph.utils.add_cves import add_cves
 
 from experimentation.packages.packages import all_packages
 
@@ -13,14 +13,15 @@ def experiment_graph():
     packages = all_packages()
 
     for package in packages:
-        time.sleep(20)
+        time.sleep(30)
+
+        file.write(package[1] + '\n')
 
         begin = time.time()
 
-        modelo = Model(package, 1)
-        modelo.generate_model(package)
+        modelo = Graph(package[0], package[1], 1)
 
-        file.write('Grafo de dependencias de ' + package.pkg_name + ': \n')
+        file.write('Grafo de dependencias de ' + package[1] + ': \n')
         file.write(str(modelo) + '\n')
 
         file.write('Tiempo de construccion del grafo: ' + str(time.time() - begin) + '\n')

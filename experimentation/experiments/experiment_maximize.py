@@ -1,5 +1,5 @@
-from model.model import Model
-from model.utils.other.add_cves import add_cves
+from graph.graph import Graph
+from graph.utils.add_cves import add_cves
 
 from pysmt_model.pysmt_model import PySMTModel
 from pysmt_model.operations import maximize_impact
@@ -16,16 +16,15 @@ def experiment_maximize():
     packages = all_packages()
 
     for package in packages:
-        time.sleep(20)
+        time.sleep(30)
 
-        file.write(package.pkg_name + '\n')
+        file.write(package[1] + '\n')
 
-        modelo = Model(package, 1)
-        modelo.generate_model(package)
+        modelo = Graph(package[0], package[1], 1)
 
-        for package in modelo.packages:
-            if package.versions:
-                add_cves(package)
+        for _package in modelo.packages:
+            if _package.versions:
+                add_cves(_package)
 
         begin = time.time()
 

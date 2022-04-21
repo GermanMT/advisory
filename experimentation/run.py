@@ -10,11 +10,8 @@ from experiments.experiment_filter import experiment_filter
 from experiments.experiment_maximize import experiment_maximize
 from experiments.experiment_minimize import experiment_minimize
 
-
+''' Recomiendo ejecutar solo uno a la vez '''
 experiment_graph()
-# time.sleep(10)
 # experiment_filter()
-# time.sleep(10)
 # experiment_maximize()
-# time.sleep(10)
 # experiment_minimize()
