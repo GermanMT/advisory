@@ -27,9 +27,9 @@ class Graph:
         )
         self.packages: list['Package'] = list()
         self.relationships: list['Relationship'] = list()
-        self.generate_model(self.root)
+        self.build_graph(self.root)
 
-    def generate_model(
+    def build_graph(
         self,
         parent: 'Package'
     ) -> None:
@@ -62,7 +62,7 @@ class Graph:
             parent.child_relationhips.append(new_relationship)
 
         for package in new_packages:
-            self.generate_model(package)
+            self.build_graph(package)
 
     def add_package(
         self,
