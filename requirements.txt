@@ -1,5 +1,5 @@
-bs4
-graphviz
-requests
-z3-solver
-nvdlib
+bs4 == 0.0.1
+graphviz == 0.19.1
+requests == 2.27.1
+z3-solver == 4.8.14.0
+nvdlib == 0.5.6
