@@ -17,7 +17,7 @@ Una herramienta para el análisis de vulnerabilidades en proyectos software **op
 ## Uso de la herramienta
 1. Obtener la herramienta: podemos descargar el comprimido de alguna de las realeases disponibles en el repositorio o bien clonar el código de la rama **main** con el comando *git clone https://github.eii.us.es/ajvarela/advisory.git*.
 
-2. Utilizar el comando *pip install -r requirements.txt* desde el directorio ráiz del proyecto para instalar las dependencias necesarias.
+2. Utilizar el comando *pip install -r requirements.txt* desde el directorio raíz del proyecto para instalar las dependencias necesarias.
 
 3. Una vez tengamos configurado el entorno podremos hacer uso de la herramienta editando el fichero main.py añadiendo el repositorio del proyecto software que queremos y ejecutando el comando *python main.py*.
 
