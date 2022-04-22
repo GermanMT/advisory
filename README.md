@@ -15,7 +15,7 @@ Una herramienta para el análisis de vulnerabilidades en proyectos software **op
 4. Adicionalmente sería recomendable utilizar un editor de código de su preferencia.
 
 ## Uso de la herramienta
-1. Obtener la herramienta: podemos descargar el comprimido de alguna de las realeases disponibles en el repositorio o bien clonar el código de la rama **main** con el comando *git clone https://github.eii.us.es/ajvarela/spl-security.git*.
+1. Obtener la herramienta: podemos descargar el comprimido de alguna de las realeases disponibles en el repositorio o bien clonar el código de la rama **main** con el comando *git clone https://github.eii.us.es/ajvarela/advisory.git*.
 
 2. Utilizar el comando *pip install -r requirements.txt* desde el directorio ráiz del proyecto para instalar las dependencias necesarias.
 
