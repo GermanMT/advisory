@@ -14,26 +14,6 @@ ops = {
     '!=': ne
 }
 
-def get_all_versions(pkg_name: str) -> list[str]:
-    url = f'https://pypi.python.org/pypi/{pkg_name}/json'
-    releases = get(url).json()['releases']
-    versions = list()
-
-    for release in releases:
-        release_date = None
-        for item in releases[release]:
-            release_date = item['upload_time']
-
-        aux = release.replace('.', '')
-
-        if aux.isdigit():
-            versions.append({
-                'release': release,
-                'release_date': release_date
-            })
-
-    return versions
-
 def approx_gt(version: str, version_: str) -> bool:
     dots = version.count('.')
     if dots == 2:
@@ -61,10 +41,19 @@ def approx_gt_minor(version: str, version_: str) -> bool:
 
     return parse_version(version) >= parse_version(version_) and parts[1] >= parts_[1]
 
-def get_versions(pkg_name: str, relationhip) -> list[str]:
-    distributions = list()
+def get_versions(pkg_name: str, relationhip, pkg_manager: str) -> list[str]:
+
+    if pkg_manager == 'PIP':
+
+        from graph.apis.pypi.get_all_version import get_all_versions
+
+    elif pkg_manager == 'NPM':
+
+        from graph.apis.npm.get_all_version import get_all_versions
 
     all_versions = get_all_versions(pkg_name)
+
+    distributions = list()
 
     if relationhip:
         for version in all_versions:

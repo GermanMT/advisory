@@ -11,7 +11,7 @@ headers = {
 
 url = 'https://api.github.com/graphql'
 
-def get_dependencies(name_with_owner: str) -> dict[str, str]:
+def get_dependencies(name_with_owner: str, pkg_manager: str) -> dict[str, str]:
     atts = name_with_owner.split('/')
     query = '{\"query\":\"query {\\n repository(owner:\\\"' \
         + atts[0] + '\\\", name:\\\"' \
@@ -22,16 +22,15 @@ def get_dependencies(name_with_owner: str) -> dict[str, str]:
         '} \\n } \\n } \\n } \\n } \\n } \\n } \" }'
 
     response = request('POST', url, data = query, headers = headers)
-    return json_reader(response.json())
+    return json_reader(response.json(), pkg_manager)
 
-def json_reader(data: json) -> dict[str, str]: 
+def json_reader(data: json, pkg_manager: str) -> dict[str, str]: 
     dependencies = dict()
 
     for edge in data['data']['repository']['dependencyGraphManifests']['edges']:
         file = edge['node']['blobPath'].split('/')[-1]
         for node in edge['node']['dependencies']['nodes']:
-            ''' De momento solo paquetes desplegados en PIP '''
-            if node['repository'] != None and node['packageManager'] == 'PIP':
+            if node['repository'] != None and node['packageManager'] == pkg_manager:
                 package_manager = node['packageManager']
                 has_dependencies = node['hasDependencies']
                 name_with_owner = node['repository']['nameWithOwner']

@@ -12,10 +12,12 @@ class Graph:
         self,
         owner: str,
         name: str,
-        total_level: int
+        total_level: int,
+        pkg_manager: str
     ) -> None:
 
         self.total_level = total_level
+        self.pkg_manager = pkg_manager
         self.root = Package(
             0,
             name,
@@ -37,7 +39,7 @@ class Graph:
         if parent.level >= self.total_level:
             return ''
 
-        dependencies = get_dependencies(parent.name_with_owner)
+        dependencies = get_dependencies(parent.name_with_owner, self.pkg_manager)
 
         new_packages = list()
 
