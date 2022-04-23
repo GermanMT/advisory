@@ -1,6 +1,8 @@
 # Advisory
 Una herramienta para el análisis de vulnerabilidades en proyectos software **open-source**.
 
+[![DOI](https://zenodo.org/badge/484736338.svg)](https://zenodo.org/badge/latestdoi/484736338)
+
 ## Entorno de desarrollo
 1. Debes tener [git](https://git-scm.com/) instalado localmente. 
 
