@@ -1,11 +1,9 @@
-import subprocess
-import json
+from requests import get
 
 
 def get_all_versions(pkg_name: str) -> list[str]:
-    _releases = subprocess.getstatusoutput(f'npm view {pkg_name} time --json')
-
-    releases = json.loads(_releases[1])
+    url = f'https://registry.npmjs.org/{pkg_name}'
+    releases = get(url).json()['time']
 
     versions = list()
 

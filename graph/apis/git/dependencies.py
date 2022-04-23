@@ -1,4 +1,3 @@
-import json
 from requests import request
 
 from graph.apis.git.req_files import get_req_files
@@ -6,7 +5,7 @@ from graph.apis.git.req_files import get_req_files
 
 headers = {
     'Accept': 'application/vnd.github.hawkgirl-preview+json',
-    'Authorization': 'Bearer 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',
+    'Authorization': 'Bearer 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',
 }
 
 url = 'https://api.github.com/graphql'
@@ -24,7 +23,7 @@ def get_dependencies(name_with_owner: str, pkg_manager: str) -> dict[str, str]:
     response = request('POST', url, data = query, headers = headers)
     return json_reader(response.json(), pkg_manager)
 
-def json_reader(data: json, pkg_manager: str) -> dict[str, str]: 
+def json_reader(data, pkg_manager: str) -> dict[str, str]: 
     dependencies = dict()
 
     for edge in data['data']['repository']['dependencyGraphManifests']['edges']:

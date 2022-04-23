@@ -14,14 +14,14 @@ from pysmt_model.operations import *
     param3: Profundidad del grafo
     param4: Gestor de paquetes
 '''
-# param1 = 'GermanMT'
-# param2 = 'urllib3'
-# param3 = 1
-# param4 = 'PIP'
-param1 = 'request'
-param2 = 'request'
+param1 = 'GermanMT'
+param2 = 'urllib3'
 param3 = 1
-param4 = 'NPM'
+param4 = 'PIP'
+# param1 = 'request'
+# param2 = 'request'
+# param3 = 1
+# param4 = 'NPM'
 
 ''' Construccion del grafo de dependencias '''
 graph = Graph(param1, param2, param3, param4)

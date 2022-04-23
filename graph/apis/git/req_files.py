@@ -1,11 +1,9 @@
-import json
-
 from requests import request
 
 
 headers = {
     'Accept': 'application/vnd.github.hawkgirl-preview+json',
-    'Authorization': 'Bearer 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',
+    'Authorization': 'Bearer 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',
 }
 
 url = 'https://api.github.com/graphql'
@@ -20,7 +18,7 @@ def get_req_files(name_with_owner: str) -> dict[str, str]:
     response = request('POST', url, data = query, headers = headers)
     return json_reader(response.json())
 
-def json_reader(data: json) -> dict[str, str]: 
+def json_reader(data) -> dict[str, str]: 
     req_files = list()
 
     for node in data['data']['repository']['dependencyGraphManifests']['nodes']:
