@@ -58,6 +58,8 @@ class Graph:
                 for version in package.versions:
                     if not package.versions[version]:
                         are_void = True
+                        break
+
                 if are_void:
                     continue
 

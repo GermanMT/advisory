@@ -54,7 +54,10 @@ def json_reader(data, parent: Package) -> dict[str, str]:
 
     for node in data['data']['repository']['dependencyGraphManifests']['nodes']:
         file = node['filename']
-        parent.req_files.append(file)
+
+        if file not in parent.req_files:
+            parent.req_files.append(file)
+
         for node in node['dependencies']['nodes']:
             if node['repository'] != None and node['packageManager'] == parent.pkg_manager:
                 package_manager = node['packageManager']

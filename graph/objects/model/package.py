@@ -25,8 +25,8 @@ class Package:
         self.file = file
         self.has_dependencies = has_dependencies
         self.name_with_owner = name_with_owner
-        self.req_files = req_files
         self.parent_relationship = parent_relationship
+        self.req_files = req_files
         self.child_relationhips = child_relationhips
         self.versions = dict()
         self.cves: list['CVE'] = list()
