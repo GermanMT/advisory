@@ -46,12 +46,19 @@ def get_versions(pkg_name: str, relationhip, pkg_manager: str) -> list[str]:
     if pkg_manager == 'PIP':
 
         from graph.apis.pypi.get_all_version import get_all_versions
+        all_versions = get_all_versions(pkg_name)
 
     elif pkg_manager == 'NPM':
 
         from graph.apis.npm.get_all_version import get_all_versions
+        all_versions = get_all_versions(pkg_name)
 
-    all_versions = get_all_versions(pkg_name)
+    elif pkg_manager == 'COMPOSER':
+
+        from graph.apis.composer.get_all_version import get_all_versions
+
+        all_versions = get_all_versions(pkg_name)
+
 
     distributions = list()
 

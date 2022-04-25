@@ -14,8 +14,8 @@ class Package:
         file: str,
         has_dependencies: bool,
         name_with_owner: str,
-        req_files: list[str],
         parent_relationship: 'Relationship' = None,
+        req_files: list[str] = list(),
         child_relationhips: list['Relationship'] = list()
     ) -> None:
 
