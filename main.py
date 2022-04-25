@@ -1,10 +1,10 @@
 from graph.graph import Graph
-from graph.graph import Package
 from graph.utils.add_cves import add_cves
 from pysmt_model.operations import *
 
 from pysmt_model.pysmt_model import PySMTModel
 from pysmt_model.operations import *
+import time
 
 
 
@@ -13,13 +13,27 @@ from pysmt_model.operations import *
     param1: Propietario del repositorio
     param2: Nombre del repositorio
     param3: Profundidad del grafo
+    param4: Gestor de paquetes
 '''
-param1 = 'GermanMT'
-param2 = 'urllib3'
+# param1 = 'GermanMT'
+# param2 = 'urllib3'
+# param3 = 1
+# param4 = 'PIP'
+
+# param1 = 'request'
+# param2 = 'request'
+# param3 = 1
+# param4 = 'NPM'
+
+param1 = 'Seldaek'
+param2 = 'monolog'
 param3 = 1
+param4 = 'COMPOSER'
 
 ''' Construccion del grafo de dependencias '''
-graph = Graph(param1, param2, param3)
+begin = time.time()
+graph = Graph(param1, param2, param3, param4)
+print('Tiempo de construcción del grafo: ', time.time() - begin)
 
 print(f'Grafo de dependencias de {param2}: ')
 print(graph)

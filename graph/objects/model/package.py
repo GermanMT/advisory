@@ -1,4 +1,4 @@
-from graph.apis.pypi.versions import get_versions
+from graph.utils.versions import get_versions
 from graph.objects.model.relationship import Relationship
 from graph.objects.model.version import Version
 from graph.objects.vulnerability.cve import CVE
@@ -14,8 +14,8 @@ class Package:
         file: str,
         has_dependencies: bool,
         name_with_owner: str,
-        req_files: list[str],
         parent_relationship: 'Relationship' = None,
+        req_files: list[str] = list(),
         child_relationhips: list['Relationship'] = list()
     ) -> None:
 
@@ -33,7 +33,7 @@ class Package:
         if parent_relationship: self.generate_versions()
 
     def generate_versions(self) -> None:
-        versions_ = get_versions(self.pkg_name, self.parent_relationship)
+        versions_ = get_versions(self.pkg_name, self.parent_relationship, self.pkg_manager)
         parent_name = self.parent_relationship.parent.pkg_name
         self.versions = {
             parent_name: 
