@@ -16,6 +16,20 @@ Una herramienta para el análisis de vulnerabilidades en proyectos software **op
 
 4. Adicionalmente sería recomendable utilizar un editor de código de su preferencia.
 
+## Variables de entorno
+
+1. Para configurar las variables de entorno debes crear un fichero *.env* en la raiz del proyecto con la siguiente estructura:
+   ```
+    # environment variables defined inside a .env file
+    GIT_GRAPHQL_API_KEY = 'YOUR_GIT_API_KEY'
+    NVD_API_KEY = 'YOUR_NVD_API_KEY'
+   ```
+    Y sustiturir ambas variables por sus API KEY.
+
+2. Para conseguir una KEY de la API GraphQL de github debe estar registrado y entrar [aquí](https://github.com/settings/tokens). Debe darle todos los permisos.
+
+3. Para conseguir una KEY de la API de NVD debe entrar [aquí](https://nvd.nist.gov/developers/request-an-api-key) y seguir los pasos.
+
 ## Uso de la herramienta
 1. Obtener la herramienta: podemos descargar el comprimido de alguna de las realeases disponibles en el repositorio o bien clonar el código de la rama **main** con el comando *git clone https://github.com/GermanMT/advisory.git*.
 
