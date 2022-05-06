@@ -8,14 +8,12 @@ RUN pip install -r requirements.txt
 
 COPY / .
 
-ARG CACHE_DATE=1
-
 # Comando para ejecutar el fichero main con el análisis
 # Modifique estos parametros para analizar el repositorio que desea
 # o: Propietario del repositorio
 # r: Nombre del repositorio
 # d: Profundidad del grafo
-RUN [ "python", "main.py", "-o", "GermanMT", "-r", "urllib3", "-d", "1"]
+CMD [ "python", "main.py", "-o", "GermanMT", "-r", "cpython", "-d", "1"]
 
-# Comando para correr los experimentos
-# RUN [ "python", "experimentation/run.py" ]
+# # Comando para correr los experimentos
+# CMD [ "python", "experimentation/run.py" ]
