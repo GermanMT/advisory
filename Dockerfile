@@ -10,5 +10,12 @@ COPY / .
 
 ARG CACHE_DATE=1
 
-RUN [ "python", "main.py" ]
+# Comando para ejecutar el fichero main con el análisis
+# Modifique estos parametros para analizar el repositorio que desea
+# o: Propietario del repositorio
+# r: Nombre del repositorio
+# d: Profundidad del grafo
+RUN [ "python", "main.py", "-o", "GermanMT", "-r", "urllib3", "-d", "1"]
+
+# Comando para correr los experimentos
 # RUN [ "python", "experimentation/run.py" ]
