@@ -2,11 +2,9 @@ FROM python:3.9
 
 WORKDIR /usr/advisory
 
-COPY requirements.txt .
+COPY / .
 
 RUN pip install -r requirements.txt
-
-COPY / .
 
 # Comando para ejecutar el fichero main con el análisis
 # Modifique estos parametros para analizar el repositorio que desea
@@ -15,5 +13,5 @@ COPY / .
 # d: Profundidad del grafo
 CMD [ "python", "main.py", "-o", "GermanMT", "-r", "cpython", "-d", "1"]
 
-# # Comando para correr los experimentos
+# Comando para correr los experimentos
 # CMD [ "python", "experimentation/run.py" ]
