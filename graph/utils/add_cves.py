@@ -8,7 +8,12 @@ from graph.graph import Package
 def add_cves(package: 'Package') -> None:
     cves = list()
 
-    cves = get_cves(package.pkg_name)
+    if package.pkg_manager == 'COMPOSER':
+        pkg_name = package.pkg_name.split('/')[1]
+    else:
+        pkg_name = package.pkg_name
+
+    cves = get_cves(pkg_name)
     for cve in cves:
         id = cve.cve.CVE_data_meta.ID
         for data in cve.cve.description.description_data:

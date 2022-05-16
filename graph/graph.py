@@ -12,15 +12,16 @@ class Graph:
         self,
         owner: str,
         name: str,
-        total_level: int
+        total_level: int,
+        pkg_manager: str
     ) -> None:
 
         self.total_level = total_level
         self.root = Package(
             0,
             name,
-            'None',
-            'None',
+            pkg_manager,
+            None,
             True,
             owner + '/' + name,
             []
@@ -37,14 +38,14 @@ class Graph:
         if parent.level >= self.total_level:
             return ''
 
-        dependencies = get_dependencies(parent.name_with_owner)
+        dependencies = get_dependencies(parent)
 
         new_packages = list()
 
         for pkg_name in dependencies:
             package = self.get_package(pkg_name)
 
-            reqs = dependencies[pkg_name][5].split(',')
+            reqs = dependencies[pkg_name][4].split(',')
 
             constraints = self.add_constraints(parse_constraints(reqs))
 
@@ -52,6 +53,18 @@ class Graph:
 
             if not package:
                 package = self.add_package(pkg_name, parent.level, dependencies, new_relationship)
+                
+                are_void = False
+                for version in package.versions:
+                    if not package.versions[version]:
+                        are_void = True
+                        break
+
+                if are_void:
+                    continue
+
+                self.packages.append(package)
+                self.relationships.append(new_relationship)
             else:
                 package.level += 1
 
@@ -79,11 +92,9 @@ class Graph:
                 dependencies[pkg_name][1],
                 dependencies[pkg_name][2],
                 dependencies[pkg_name][3],
-                dependencies[pkg_name][4],
                 parent
             )
 
-        self.packages.append(pkg)
         return pkg
 
     def add_relationship(
@@ -97,7 +108,6 @@ class Graph:
                 constraints = constraints
             )
 
-        self.relationships.append(rel)
         return rel
 
     def add_constraints(
