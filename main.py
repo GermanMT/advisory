@@ -1,9 +1,8 @@
-from graph.graph import Graph
-from graph.utils.add_cves import add_cves
-from pysmt_model.operations import *
+from models.graph.graph import Graph
+from models.pysmt_model.pysmt_model import PySMTModel
+from models.graph.utils.add_cves import add_cves
 
-from pysmt_model.pysmt_model import PySMTModel
-from pysmt_model.operations import *
+from operations import *
 
 import argparse
 
@@ -25,6 +24,13 @@ if __name__ == '__main__':
         type = str
     )
     parser.add_argument(
+        '-m',
+        '--manager',
+        help = 'Package manager of the repository',
+        required = True,
+        type = str
+    )
+    parser.add_argument(
         '-d',
         '--depth',
         help = 'The depht of dependency graph',
@@ -34,7 +40,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     ''' Construccion del grafo de dependencias '''
-    graph = Graph(args.owner, args.repository, args.depth)
+    graph = Graph(args.owner, args.repository, args.manager, args.depth)
 
     print('Grafo de dependencias: ')
     print(graph)

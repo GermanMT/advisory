@@ -1,7 +1,7 @@
-from graph.utils.versions import get_versions
-from graph.objects.model.relationship import Relationship
-from graph.objects.model.version import Version
-from graph.objects.vulnerability.cve import CVE
+from models.graph.utils.versions import get_versions
+from models.graph.objects.model.relationship import Relationship
+from models.graph.objects.model.version import Version
+from models.graph.objects.vulnerability.cve import CVE
 
 
 class Package:

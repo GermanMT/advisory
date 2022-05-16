@@ -1,4 +1,4 @@
-from graph.objects.model.constraint import Constraint
+from models.graph.objects.model.constraint import Constraint
 
 
 class Relationship:

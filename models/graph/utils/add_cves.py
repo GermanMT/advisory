@@ -1,8 +1,8 @@
-from graph.apis.nvd.cves import get_cves
+from models.graph.apis.nvd.cves import get_cves
 
-from graph.objects.vulnerability.cve import CVE
-from graph.objects.vulnerability.cvss import CVSS
-from graph.graph import Package
+from models.graph.objects.vulnerability.cve import CVE
+from models.graph.objects.vulnerability.cvss import CVSS
+from models.graph.graph import Package
 
 
 def add_cves(package: 'Package') -> None:

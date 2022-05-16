@@ -1,7 +1,7 @@
 import requests
 import os
 
-from graph.objects.model.package import Package
+from models.graph.objects.model.package import Package
 from dotenv import load_dotenv
 
 

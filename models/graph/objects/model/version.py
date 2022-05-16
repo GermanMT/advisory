@@ -1,4 +1,4 @@
-from graph.objects.vulnerability.cve import CVE
+from models.graph.objects.vulnerability.cve import CVE
 
 
 class Version:

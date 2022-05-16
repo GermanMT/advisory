@@ -1,5 +1,5 @@
-from graph.graph import Graph
-from graph.objects.model.version import Version
+from models.graph.graph import Graph
+from models.graph.objects.model.version import Version
 
 from z3 import And, Or, Int, Real, Implies
 

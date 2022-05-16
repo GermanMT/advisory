@@ -1,6 +1,6 @@
 from z3 import And, Or, Solver, sat
 
-from pysmt_model.pysmt_model import PySMTModel
+from models.pysmt_model.pysmt_model import PySMTModel
 
 
 def number_of_products(smt_model: PySMTModel) -> None:

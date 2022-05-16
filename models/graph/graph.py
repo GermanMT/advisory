@@ -1,9 +1,9 @@
-from graph.apis.git.dependencies import get_dependencies
-from graph.utils.parse_constraints import parse_constraints
+from models.graph.apis.git.dependencies import get_dependencies
+from models.graph.utils.parse_constraints import parse_constraints
 
-from graph.objects.model.package import Package
-from graph.objects.model.relationship import Relationship
-from graph.objects.model.constraint import Constraint
+from models.graph.objects.model.package import Package
+from models.graph.objects.model.relationship import Relationship
+from models.graph.objects.model.constraint import Constraint
 
 
 class Graph:
@@ -12,8 +12,8 @@ class Graph:
         self,
         owner: str,
         name: str,
-        total_level: int,
-        pkg_manager: str
+        pkg_manager: str,
+        total_level: int
     ) -> None:
 
         self.total_level = total_level

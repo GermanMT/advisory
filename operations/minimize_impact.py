@@ -1,11 +1,11 @@
 from z3 import And, Or, Optimize, sat
 
-from pysmt_model.pysmt_model import PySMTModel
+from models.pysmt_model.pysmt_model import PySMTModel
 
 import sys
 
 
-def maximize_impact(
+def minimize_impact(
     smt_model: PySMTModel,
     limit: int = sys.maxsize
     ) -> None:
@@ -18,7 +18,7 @@ def maximize_impact(
     solver = Optimize()
     if smt_model.vars:
         CVSSt = smt_model.vars[0]
-        solver.maximize(CVSSt)
+        solver.minimize(CVSSt)
 
     formula = And(_domains)
     solver.add(formula)
