@@ -13,11 +13,11 @@ def maximize_impact(
     results = list()
 
     _domains = list()
-    _domains.extend(smt_model.domains)
+    _domains.extend(smt_model.get_domains())
 
     solver = Optimize()
-    if smt_model.vars:
-        CVSSt = smt_model.vars[0]
+    if smt_model.get_vars():
+        CVSSt = smt_model.get_vars()[0]
         solver.maximize(CVSSt)
 
     formula = And(_domains)

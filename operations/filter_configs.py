@@ -15,10 +15,10 @@ def filter_configs(
     results = list()
 
     _domains = list()
-    _domains.extend(smt_model.domains)
+    _domains.extend(smt_model.get_domains())
 
-    if smt_model.vars:
-        CVSSt = smt_model.vars[0]
+    if smt_model.get_vars():
+        CVSSt = smt_model.get_vars()[0]
         max_ctc = CVSSt <= max_threshold
         min_ctc = CVSSt >= min_threshold
         _domains.extend([max_ctc, min_ctc])

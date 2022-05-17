@@ -1,5 +1,5 @@
 from models.graph.graph import Graph
-from models.pysmt_model.pysmt_model import PySMTModel
+from transformations.graph_to_smt import GraphToSMT
 from models.graph.utils.add_cves import add_cves
 
 from operations import *
@@ -53,8 +53,8 @@ if __name__ == '__main__':
 
 
     ''' Transformacion del grafo en un modelo SMT '''
-    modelo_smt = PySMTModel(graph)
-    modelo_smt.generate_model()
+    transform = GraphToSMT(graph)
+    modelo_smt = transform.transform()
 
 
     ''' Operacion de filtro '''
@@ -76,7 +76,7 @@ if __name__ == '__main__':
             name = str(part)
             package = graph.get_package(name)
             if package:
-                _results[name] = modelo_smt.versions[name][result[part].as_long()]
+                _results[name] = modelo_smt.get_versions()[name][result[part].as_long()]
             if str(part) == 'CVSSt':
                 _results['CVSSt'] = result[part]
 
@@ -96,7 +96,7 @@ if __name__ == '__main__':
             name = str(part)
             package = graph.get_package(name)
             if package:
-                _results[name] = modelo_smt.versions[name][result[part].as_long()]
+                _results[name] = modelo_smt.get_versions()[name][result[part].as_long()]
             if str(part) == 'CVSSt':
                 _results['CVSSt'] = result[part]
 
