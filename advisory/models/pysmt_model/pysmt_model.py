@@ -14,32 +14,32 @@ class PySMTModel(VariabilityModel):
         return 'pysmt'
 
     def __init__(self) -> None:
-        self._domains = list()
-        self._vars = list()
-        self._versions = dict()
+        self.__domains = list()
+        self.__vars = list()
+        self.__versions = dict()
 
     def add_domain(self, domain: Union[And, Or, Implies]) -> None:
-        self._domains.append(domain)
+        self.__domains.append(domain)
 
     def add_var(self, var: Union[Real, Int]) -> None:
-        self._vars.append(var)
+        self.__vars.append(var)
 
     def add_version(self, name: str, version: dict[int, Version]) -> None:
-        if name not in self._versions:
-            self._versions[name] = version
+        if name not in self.__versions:
+            self.__versions[name] = version
         else:
-            self._versions[name].update(version)
+            self.__versions[name].update(version)
 
     def get_domains(self) -> list[Union[And, Or, Implies]]:
-        return self._domains
+        return self.__domains
 
     def get_vars(self) -> list[Union[Real, Int]]:
-        return self._vars
+        return self.__vars
 
     def get_versions(self) -> dict[str, dict[int, Version]]:
-        return self._versions
+        return self.__versions
 
     def get_var(self, name: str) -> Union[Real, Int]:
-        for var in self._vars:
+        for var in self.__vars:
             if str(var) == name:
                 return var

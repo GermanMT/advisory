@@ -16,7 +16,7 @@ class Graph(VariabilityModel):
         pkg_manager: str
     ) -> None:
 
-        self._root: 'Package' = Package(
+        self.__root: 'Package' = Package(
             0,
             name,
             pkg_manager,
@@ -25,31 +25,31 @@ class Graph(VariabilityModel):
             owner + '/' + name,
             []
         )
-        self._packages: list['Package'] = list()
-        self._relationships: list['Relationship'] = list()
+        self.__packages: list['Package'] = list()
+        self.__relationships: list['Relationship'] = list()
 
     def get_root(self) -> 'Package':
-        return self._root
+        return self.__root
 
     def get_packages(self) -> list['Package']:
-        return self._packages
+        return self.__packages
 
     def get_relationships(self) -> list['Relationship']:
-        return self._relationships
+        return self.__relationships
 
     def add_package(
         self,
         package: 'Package'
     ) -> 'Package':
 
-        self._packages.append(package)
+        self.__packages.append(package)
 
     def add_relationship(
         self,
         relationship: 'Relationship'
     ) -> 'Relationship':
 
-        self._relationships.append(relationship)
+        self.__relationships.append(relationship)
 
     def add_constraints(
         self,
@@ -63,18 +63,18 @@ class Graph(VariabilityModel):
         return constraints
 
     def get_package(self, pkg_name: str) -> 'Package':
-        for package in self._packages:
+        for package in self.__packages:
             if package.pkg_name == pkg_name:
                 return package
 
     def __repr__(self) -> str:
-        model_str = f'Root: {self._root.pkg_name} \n'
+        model_str = f'Root: {self.__root.pkg_name} \n'
 
         model_str += '\n'
 
         model_str += 'Packages: \n'
         i = 0
-        for pkg in self._packages:
+        for pkg in self.__packages:
             versions = [{parent: str(pkg.versions[parent]) + ' -> ' +str(len(pkg.versions[parent]))} for parent in pkg.versions]
             model_str += f'Package{i}: {pkg.pkg_name}: {versions} \n'
             i += 1
@@ -83,7 +83,7 @@ class Graph(VariabilityModel):
 
         model_str += 'Relationships: \n'
         i = 0
-        for rel in self._relationships:
+        for rel in self.__relationships:
             model_str += f'Relationship{i}: {rel.parent.pkg_name} -> {rel.child.pkg_name} \n'
             i += 1
 
@@ -91,7 +91,7 @@ class Graph(VariabilityModel):
 
         model_str += 'Constraints: \n'
         i = 0
-        for rel in self._relationships:
+        for rel in self.__relationships:
             for const in rel.constraints:
                 model_str += f'Constraint{i}: {rel.child.pkg_name} {const.signature} \n'
                 i += 1

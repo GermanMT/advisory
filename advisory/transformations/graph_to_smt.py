@@ -18,37 +18,37 @@ class GraphToSMT(ModelToModel):
         return 'smt'
 
     def __init__(self, source_model: Graph) -> None:
-        self.source_model: Graph = source_model
-        self.destination_model: PySMTModel = PySMTModel()
-        self.counter: int = 0
-        self.CVSSs: dict = dict()
+        self.__source_model: Graph = source_model
+        self.__destination_model: PySMTModel = PySMTModel()
+        self.__counter: int = 0
+        self.__CVSSs: dict = dict()
 
     def transform(self) -> PySMTModel:
-        if self.source_model.get_packages():
+        if self.__source_model.get_packages():
             CVSSt = Real('CVSSt')
-            self.destination_model.add_var(CVSSt)
+            self.__destination_model.add_var(CVSSt)
 
-            for package in self.source_model.get_packages():
+            for package in self.__source_model.get_packages():
                 self.add_package(package)
 
-            p_impact = self.division(self.CVSSs.values())
-            self.destination_model.add_domain(eq(CVSSt, p_impact))
+            p_impact = self.division(self.__CVSSs.values())
+            self.__destination_model.add_domain(eq(CVSSt, p_impact))
 
-        return self.destination_model
+        return self.__destination_model
 
     def add_package(self, package: Package):
         name = 'CVSS' + package.pkg_name
-        self.CVSSs[name] = Real(name)
-        self.destination_model.add_var(self.CVSSs[name])
+        self.__CVSSs[name] = Real(name)
+        self.__destination_model.add_var(self.__CVSSs[name])
 
         var = Int(package.pkg_name)
-        self.destination_model.add_var(var)
+        self.__destination_model.add_var(var)
 
         versions = list()
         [versions.extend(package.versions[parent_name]) for parent_name in package.versions]
 
-        self.counter = 0
-        all_p_cves, p_cvss = self.add_versions(versions, var, self.CVSSs[name])
+        self.__counter = 0
+        all_p_cves, p_cvss = self.add_versions(versions, var, self.__CVSSs[name])
 
         p_domain = self.add_problems(var)
 
@@ -56,14 +56,14 @@ class GraphToSMT(ModelToModel):
         sub_domain.extend(all_p_cves)
         sub_domain.extend(p_domain)
 
-        self.destination_model.add_domain(And(sub_domain))
+        self.__destination_model.add_domain(And(sub_domain))
 
     def add_versions(self, versions: list[Version], var: Int, part_cvss: Real) -> tuple[list, list, list]:
         all_p_cves = list()
         p_cvss = list()
 
         for version in versions:
-            self.destination_model.add_version(str(var), {self.counter: version})
+            self.__destination_model.add_version(str(var), {self.__counter: version})
 
             p_cves = self.add_cves(version)
             
@@ -74,9 +74,9 @@ class GraphToSMT(ModelToModel):
                     all_p_cves.append(expr)
 
             v_impact = self.division(p_cves.keys()) if version.cves else 0.
-            ctc = Implies(var == self.counter, part_cvss == v_impact)
+            ctc = Implies(var == self.__counter, part_cvss == v_impact)
             p_cvss.append(Or(ctc))
-            self.counter += 1
+            self.__counter += 1
 
         return (all_p_cves, p_cvss)
 
@@ -85,7 +85,7 @@ class GraphToSMT(ModelToModel):
 
         for cve in version.cves:
 
-            old_p_cve = self.destination_model.get_var(cve.id)
+            old_p_cve = self.__destination_model.get_var(cve.id)
 
             if not old_p_cve:
                 p_cve = Real(cve.id)
@@ -105,7 +105,7 @@ class GraphToSMT(ModelToModel):
     def add_problems(self, var: Int) -> list:
         problems_ = [
             var >= 0,
-            var <= self.counter - 1
+            var <= self.__counter - 1
         ]
 
         return problems_

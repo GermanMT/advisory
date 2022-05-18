@@ -11,15 +11,15 @@ from famapy.core.transformations import Transformation
 class BuildGraph(Transformation):
 
     def __init__(self, source_model: Graph, total_level: int) -> None:
-        self.source_model = source_model
-        self.total_level = total_level
+        self.__source_model = source_model
+        self.__total_level = total_level
 
     def transform(
         self,
         parent: 'Package'
     ) -> None:
 
-        if parent.level >= self.total_level:
+        if parent.level >= self.__total_level:
             return ''
 
         dependencies = get_dependencies(parent)
@@ -27,11 +27,11 @@ class BuildGraph(Transformation):
         new_packages = list()
 
         for pkg_name in dependencies:
-            package = self.source_model.get_package(pkg_name)
+            package = self.__source_model.get_package(pkg_name)
 
             reqs = dependencies[pkg_name][4].split(',')
 
-            constraints = self.source_model.add_constraints(parse_constraints(reqs))
+            constraints = self.__source_model.add_constraints(parse_constraints(reqs))
 
             new_relationship = self.build_relationship(parent, constraints)
 
@@ -47,8 +47,8 @@ class BuildGraph(Transformation):
                 if are_void:
                     continue
 
-                self.source_model.add_package(package)
-                self.source_model.add_relationship(new_relationship)
+                self.__source_model.add_package(package)
+                self.__source_model.add_relationship(new_relationship)
             else:
                 package.level += 1
 
