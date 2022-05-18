@@ -1,23 +1,26 @@
-from models.graph.apis.git.dependencies import get_dependencies
-from models.graph.utils.parse_constraints import parse_constraints
+from models.graph.objects import (
+    Package,
+    Relationship,
+    Constraint
+)
 
-from models.graph.objects.model.package import Package
-from models.graph.objects.model.relationship import Relationship
-from models.graph.objects.model.constraint import Constraint
+from famapy.core.models import VariabilityModel
 
 
-class Graph:
+class Graph(VariabilityModel):
+
+    @staticmethod
+    def get_extension() -> str:
+        return 'graph'
 
     def __init__(
         self,
         owner: str,
         name: str,
-        pkg_manager: str,
-        total_level: int
+        pkg_manager: str
     ) -> None:
 
-        self.total_level = total_level
-        self.root = Package(
+        self._root: 'Package' = Package(
             0,
             name,
             pkg_manager,
@@ -26,89 +29,31 @@ class Graph:
             owner + '/' + name,
             []
         )
-        self.packages: list['Package'] = list()
-        self.relationships: list['Relationship'] = list()
-        self.build_graph(self.root)
+        self._packages: list['Package'] = list()
+        self._relationships: list['Relationship'] = list()
 
-    def build_graph(
-        self,
-        parent: 'Package'
-    ) -> None:
+    def get_root(self) -> 'Package':
+        return self._root
 
-        if parent.level >= self.total_level:
-            return ''
+    def get_packages(self) -> list['Package']:
+        return self._packages
 
-        dependencies = get_dependencies(parent)
-
-        new_packages = list()
-
-        for pkg_name in dependencies:
-            package = self.get_package(pkg_name)
-
-            reqs = dependencies[pkg_name][4].split(',')
-
-            constraints = self.add_constraints(parse_constraints(reqs))
-
-            new_relationship = self.add_relationship(parent, constraints)
-
-            if not package:
-                package = self.add_package(pkg_name, parent.level, dependencies, new_relationship)
-                
-                are_void = False
-                for version in package.versions:
-                    if not package.versions[version]:
-                        are_void = True
-                        break
-
-                if are_void:
-                    continue
-
-                self.packages.append(package)
-                self.relationships.append(new_relationship)
-            else:
-                package.level += 1
-
-            new_packages.append(package)
-
-            new_relationship.child = package
-
-            parent.child_relationhips.append(new_relationship)
-
-        for package in new_packages:
-            self.build_graph(package)
+    def get_relationships(self) -> list['Relationship']:
+        return self._relationships
 
     def add_package(
         self,
-        pkg_name: str,
-        current_level: int,
-        dependencies: dict[str, str],
-        parent: 'Relationship'
+        package: 'Package'
     ) -> 'Package':
 
-        pkg = Package(
-                current_level + 1,
-                pkg_name,
-                dependencies[pkg_name][0],
-                dependencies[pkg_name][1],
-                dependencies[pkg_name][2],
-                dependencies[pkg_name][3],
-                parent
-            )
-
-        return pkg
+        self._packages.append(package)
 
     def add_relationship(
         self,
-        parent: 'Package',
-        constraints: list['Constraint']
+        relationship: 'Relationship'
     ) -> 'Relationship':
 
-        rel = Relationship(
-                parent,
-                constraints = constraints
-            )
-
-        return rel
+        self._relationships.append(relationship)
 
     def add_constraints(
         self,
@@ -122,18 +67,18 @@ class Graph:
         return constraints
 
     def get_package(self, pkg_name: str) -> 'Package':
-        for package in self.packages:
+        for package in self._packages:
             if package.pkg_name == pkg_name:
                 return package
 
     def __repr__(self) -> str:
-        model_str = f'Root: {self.root.pkg_name} \n'
+        model_str = f'Root: {self._root.pkg_name} \n'
 
         model_str += '\n'
 
         model_str += 'Packages: \n'
         i = 0
-        for pkg in self.packages:
+        for pkg in self._packages:
             versions = [{parent: str(pkg.versions[parent]) + ' -> ' +str(len(pkg.versions[parent]))} for parent in pkg.versions]
             model_str += f'Package{i}: {pkg.pkg_name}: {versions} \n'
             i += 1
@@ -142,7 +87,7 @@ class Graph:
 
         model_str += 'Relationships: \n'
         i = 0
-        for rel in self.relationships:
+        for rel in self._relationships:
             model_str += f'Relationship{i}: {rel.parent.pkg_name} -> {rel.child.pkg_name} \n'
             i += 1
 
@@ -150,7 +95,7 @@ class Graph:
 
         model_str += 'Constraints: \n'
         i = 0
-        for rel in self.relationships:
+        for rel in self._relationships:
             for const in rel.constraints:
                 model_str += f'Constraint{i}: {rel.child.pkg_name} {const.signature} \n'
                 i += 1
