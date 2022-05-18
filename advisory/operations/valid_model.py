@@ -2,9 +2,19 @@ from z3 import And, Solver, sat
 
 from advisory.models import PySMTModel
 
+from famapy.core.operations import Operation
 
-def valid_model(smt_model: PySMTModel) -> None:
-    formula = And(smt_model.domains)
-    solver = Solver()
-    solver.add(formula)
-    return solver.check() == sat
+
+class ValidModel(Operation):
+
+    def __init__(self) -> None:
+        self.__result: bool = True
+
+    def get_result(self) -> bool:
+        return self.__result
+
+    def execute(self, smt_model: PySMTModel) -> None:
+        formula = And(smt_model.domains)
+        solver = Solver()
+        solver.add(formula)
+        self.__result == solver.check() == sat

@@ -1,7 +1,7 @@
-from .valid_model import valid_model
-from .number_of_products import number_of_products
-from .filter_configs import filter_configs
-from .maximize_impact import maximize_impact
-from .minimize_impact import minimize_impact
+from .valid_model import ValidModel
+from .number_of_products import NumberOfProducts
+from .filter_configs import FilterConfigs
+from .maximize_impact import MaximizeImpact
+from .minimize_impact import MinimizeImpact
 
-__all__ = ["valid_model", "number_of_products", "filter_configs", "maximize_impact", "minimize_impact"]
+__all__ = ['ValidModel', 'NumberOfProducts', 'FilterConfigs', 'MaximizeImpact', 'MinimizeImpact']

@@ -4,33 +4,39 @@ from advisory.models import PySMTModel
 
 import sys
 
+from famapy.core.operations import Operation
 
-def maximize_impact(
-    smt_model: PySMTModel,
-    limit: int = sys.maxsize
-    ) -> None:
 
-    results = list()
+class MaximizeImpact(Operation):
 
-    _domains = list()
-    _domains.extend(smt_model.get_domains())
+    def __init__(
+        self,
+        limit: int = sys.maxsize
+        ) -> None:
+        self.__limit: int = limit
+        self.__result: list = list()
 
-    solver = Optimize()
-    if smt_model.get_vars():
-        CVSSt = smt_model.get_vars()[0]
-        solver.maximize(CVSSt)
+    def get_result(self) -> list:
+        return self.__result
 
-    formula = And(_domains)
-    solver.add(formula)
-    while solver.check() == sat and len(results) < limit:
-        config = solver.model()
-        results.append(config)
+    def execute(self, smt_model: PySMTModel) -> 'MaximizeImpact':
+        _domains = list()
+        _domains.extend(smt_model.get_domains())
 
-        block = list()
-        for var in config: # var is a declaration of a smt variable
-            c = var() # create a constant from declaration
-            block.append(c != config[var])
+        solver = Optimize()
+        if smt_model.get_vars():
+            CVSSt = smt_model.get_vars()[0]
+            solver.maximize(CVSSt)
 
-        solver.add(Or(block))
+        formula = And(_domains)
+        solver.add(formula)
+        while solver.check() == sat and len(self.__result) < self.__limit:
+            config = solver.model()
+            self.__result.append(config)
 
-    return results
+            block = list()
+            for var in config: # var is a declaration of a smt variable
+                c = var() # create a constant from declaration
+                block.append(c != config[var])
+
+            solver.add(Or(block))

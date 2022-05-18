@@ -61,18 +61,23 @@ if __name__ == '__main__':
 
 
     ''' Operacion de filtro '''
-    results = filter_configs(modelo_smt, min_threshold = 0, max_threshold = 0.1, limit = 500)
+    filter_configs = FilterConfigs(min_threshold = 0, max_threshold = 0.1, limit = 500)
+    filter_configs.execute(modelo_smt)
+    result = filter_configs.get_result()
+
     print(
         'Numero de configuracion con impacto entre 0 y 0.1: ',
-        len(results),
+        len(result),
         '\n'
     )
 
 
     ''' Operacion de minimizacion '''
-    minimize = minimize_impact(modelo_smt, limit = 1)
+    minimize = MinimizeImpact(limit = 1)
+    minimize.execute(modelo_smt)
+    results = minimize.get_result()
     print('Configuracion con el menor impacto: ')
-    for result in minimize:
+    for result in results:
         _results = dict()
 
         for part in result:
@@ -90,9 +95,11 @@ if __name__ == '__main__':
 
 
     ''' Operacion de maximizacion '''
-    maximize = maximize_impact(modelo_smt, limit = 1)
+    maximize = MaximizeImpact(limit = 1)
+    maximize.execute(modelo_smt)
+    results = maximize.get_result()
     print('Configuracion con el mayor impacto: ')
-    for result in maximize:
+    for result in results:
         _results = dict()
 
         for part in result:

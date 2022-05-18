@@ -4,38 +4,46 @@ from advisory.models import PySMTModel
 
 import sys
 
+from famapy.core.operations import Operation
 
-def filter_configs(
-    smt_model: PySMTModel, 
-    max_threshold: float = 10.,
-    min_threshold: float = 0.,
-    limit: int = sys.maxsize
-    ) -> None:
 
-    results = list()
+class FilterConfigs(Operation):
 
-    _domains = list()
-    _domains.extend(smt_model.get_domains())
+    def __init__(
+        self,
+        max_threshold: float = 10.,
+        min_threshold: float = 0.,
+        limit: int = sys.maxsize
+        ) -> None:
+        self.__max_threshold: float = max_threshold
+        self.__min_threshold: float = min_threshold
+        self.__limit: int = limit
+        self.__result: list = list()
 
-    if smt_model.get_vars():
-        CVSSt = smt_model.get_vars()[0]
-        max_ctc = CVSSt <= max_threshold
-        min_ctc = CVSSt >= min_threshold
-        _domains.extend([max_ctc, min_ctc])
+    def get_result(self) -> list:
+        return self.__result
 
-    solver = Solver()
-    formula = And(_domains)
-    solver.add(formula)
-    while solver.check() == sat and len(results) < limit:
-        config = solver.model()
-        if config:
-            results.append(config)
+    def execute(self, smt_model: PySMTModel) -> 'FilterConfigs':
+        _domains = list()
+        _domains.extend(smt_model.get_domains())
 
-        block = list()
-        for var in config: # var is a declaration of a smt variable
-            c = var() # create a constant from declaration
-            block.append(c != config[var])
+        if smt_model.get_vars():
+            CVSSt = smt_model.get_vars()[0]
+            max_ctc = CVSSt <= self.__max_threshold
+            min_ctc = CVSSt >= self.__min_threshold
+            _domains.extend([max_ctc, min_ctc])
 
-        solver.add(Or(block))
+        solver = Solver()
+        formula = And(_domains)
+        solver.add(formula)
+        while solver.check() == sat and len(self.__result) < self.__limit:
+            config = solver.model()
+            if config:
+                self.__result.append(config)
 
-    return results
+            block = list()
+            for var in config: # var is a declaration of a smt variable
+                c = var() # create a constant from declaration
+                block.append(c != config[var])
+
+            solver.add(Or(block))
