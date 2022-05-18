@@ -1,7 +1,7 @@
-from models.graph.utils.versions import get_versions
-from models.graph.objects.model.relationship import Relationship
-from models.graph.objects.model.version import Version
-from models.graph.objects.vulnerability.cve import CVE
+from advisory.models.graph.utils.versions import get_versions
+from advisory.objects.model.relationship import Relationship
+from advisory.objects.model.version import Version
+from advisory.objects.vulnerability.cve import CVE
 
 
 class Package:

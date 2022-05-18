@@ -1,6 +1,6 @@
 from z3 import And, Or, Optimize, sat
 
-from models.pysmt_model.pysmt_model import PySMTModel
+from advisory.models import PySMTModel
 
 import sys
 

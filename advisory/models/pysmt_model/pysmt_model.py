@@ -1,8 +1,6 @@
-from models.graph.objects.model.version import Version
+from advisory.objects import Version
 
 from z3 import And, Or, Int, Real, Implies
-
-from operator import eq
 
 from typing import Union
 
@@ -27,9 +25,6 @@ class PySMTModel(VariabilityModel):
         self._vars.append(var)
 
     def add_version(self, name: str, version: dict[int, Version]) -> None:
-        # print(name)
-        # print(version)
-        # print(self._versions)
         if name not in self._versions:
             self._versions[name] = version
         else:

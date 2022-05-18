@@ -1,12 +1,14 @@
-from z3 import And, Or, Optimize, sat
+from z3 import And, Or, Solver, sat
 
-from models.pysmt_model.pysmt_model import PySMTModel
+from advisory.models import PySMTModel
 
 import sys
 
 
-def minimize_impact(
-    smt_model: PySMTModel,
+def filter_configs(
+    smt_model: PySMTModel, 
+    max_threshold: float = 10.,
+    min_threshold: float = 0.,
     limit: int = sys.maxsize
     ) -> None:
 
@@ -15,16 +17,19 @@ def minimize_impact(
     _domains = list()
     _domains.extend(smt_model.get_domains())
 
-    solver = Optimize()
     if smt_model.get_vars():
         CVSSt = smt_model.get_vars()[0]
-        solver.minimize(CVSSt)
+        max_ctc = CVSSt <= max_threshold
+        min_ctc = CVSSt >= min_threshold
+        _domains.extend([max_ctc, min_ctc])
 
+    solver = Solver()
     formula = And(_domains)
     solver.add(formula)
     while solver.check() == sat and len(results) < limit:
         config = solver.model()
-        results.append(config)
+        if config:
+            results.append(config)
 
         block = list()
         for var in config: # var is a declaration of a smt variable

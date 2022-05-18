@@ -1,11 +1,9 @@
-from models.graph.apis.git.dependencies import get_dependencies
-from models.graph.utils.parse_constraints import parse_constraints
+from advisory.models.graph.apis.git.dependencies import get_dependencies
+from advisory.models.graph.utils.parse_constraints import parse_constraints
 
-from models.graph.graph import Graph
+from advisory.models import Graph
 
-from models.graph.objects.model.package import Package
-from models.graph.objects.model.relationship import Relationship
-from models.graph.objects.model.constraint import Constraint
+from advisory.objects import Package, Relationship, Constraint
 
 from famapy.core.transformations import Transformation
 

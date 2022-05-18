@@ -1,8 +1,9 @@
-from models.graph.graph import Graph
-from transformations.graph_to_smt import GraphToSMT
-from models.graph.utils.add_cves import add_cves
+from advisory.models import Graph
+from advisory.models.graph.utils.add_cves import add_cves
 
-from operations import *
+from advisory.transformations import *
+
+from advisory.operations import *
 
 import argparse
 
@@ -40,14 +41,16 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     ''' Construccion del grafo de dependencias '''
-    graph = Graph(args.owner, args.repository, args.manager, args.depth)
+    graph = Graph(args.owner, args.repository, args.manager)
+    builder = BuildGraph(graph, args.depth)
+    builder.transform(graph.get_root())
 
     print('Grafo de dependencias: ')
     print(graph)
 
 
     ''' Atribucion del grafo con vulnerabilidades '''
-    for package in graph.packages:
+    for package in graph.get_packages():
         if package.versions:
             add_cves(package)
 

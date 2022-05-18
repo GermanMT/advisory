@@ -1,8 +1,4 @@
-from models.graph.objects import (
-    Package,
-    Relationship,
-    Constraint
-)
+from advisory.objects import Package, Relationship, Constraint
 
 from famapy.core.models import VariabilityModel
 

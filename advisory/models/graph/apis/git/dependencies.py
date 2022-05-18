@@ -1,7 +1,8 @@
 import requests
 import os
 
-from models.graph.objects.model.package import Package
+from advisory.objects import Package
+
 from dotenv import load_dotenv
 
 

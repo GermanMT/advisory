@@ -1,5 +1,3 @@
-from requests import get
-
 from pkg_resources import parse_version
 
 from operator import eq, gt, lt, ge, le, ne
@@ -45,17 +43,17 @@ def get_versions(pkg_name: str, relationhip, pkg_manager: str) -> list[str]:
 
     if pkg_manager == 'PIP':
 
-        from models.graph.apis.pypi.get_all_version import get_all_versions
+        from advisory.models.graph.apis.pypi.get_all_version import get_all_versions
         all_versions = get_all_versions(pkg_name)
 
     elif pkg_manager == 'NPM':
 
-        from models.graph.apis.npm.get_all_version import get_all_versions
+        from advisory.models.graph.apis.npm.get_all_version import get_all_versions
         all_versions = get_all_versions(pkg_name)
 
     elif pkg_manager == 'COMPOSER':
 
-        from models.graph.apis.composer.get_all_version import get_all_versions
+        from advisory.models.graph.apis.composer.get_all_version import get_all_versions
 
         all_versions = get_all_versions(pkg_name)
 

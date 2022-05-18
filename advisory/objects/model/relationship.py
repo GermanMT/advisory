@@ -1,4 +1,4 @@
-from models.graph.objects.model.constraint import Constraint
+from advisory.objects.model.constraint import Constraint
 
 
 class Relationship:

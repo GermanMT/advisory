@@ -1,6 +1,6 @@
 from z3 import And, Solver, sat
 
-from models.pysmt_model.pysmt_model import PySMTModel
+from advisory.models import PySMTModel
 
 
 def valid_model(smt_model: PySMTModel) -> None:

@@ -1,7 +1,5 @@
-from models.graph.graph import Graph
-from models.pysmt_model.pysmt_model import PySMTModel
-from models.graph.objects.model.version import Version
-from models.graph.objects.model.package import Package
+from advisory.models import Graph, PySMTModel
+from advisory.objects import Version, Package
 
 from z3 import And, Or, Int, Real, Implies
 
@@ -26,11 +24,11 @@ class GraphToSMT(ModelToModel):
         self.CVSSs: dict = dict()
 
     def transform(self) -> PySMTModel:
-        if self.source_model.packages:
+        if self.source_model.get_packages():
             CVSSt = Real('CVSSt')
             self.destination_model.add_var(CVSSt)
 
-            for package in self.source_model.packages:
+            for package in self.source_model.get_packages():
                 self.add_package(package)
 
             p_impact = self.division(self.CVSSs.values())
