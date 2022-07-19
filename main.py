@@ -1,5 +1,4 @@
 from advisory.models import Graph
-from advisory.models.graph.utils.add_cves import add_cves
 
 from advisory.transformations import *
 
@@ -45,15 +44,11 @@ if __name__ == '__main__':
     builder = BuildGraph(graph, args.depth)
     builder.transform(graph.get_root())
 
+    ''' Atribucion del grafo con vulnerabilidades '''
+    builder.attribute()
+
     print('Grafo de dependencias: ')
     print(graph)
-
-
-    ''' Atribucion del grafo con vulnerabilidades '''
-    for package in graph.get_packages():
-        if package.versions:
-            add_cves(package)
-
 
     ''' Transformacion del grafo en un modelo SMT '''
     transform = GraphToSMT(graph)

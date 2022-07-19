@@ -18,7 +18,7 @@ headers = {
 endpoint = 'https://api.github.com/graphql'
 
 def get_dependencies(parent: Package) -> dict[str, str]:
-    owner, name = parent.name_with_owner.split('/')
+    owner, name = parent.get_name_with_owner().split('/')
     query = '''{
             repository(owner: \"%s\", name: \"%s\")
             {
@@ -56,11 +56,11 @@ def json_reader(data, parent: Package) -> dict[str, str]:
     for node in data['data']['repository']['dependencyGraphManifests']['nodes']:
         file = node['filename']
 
-        if file not in parent.req_files:
-            parent.req_files.append(file)
+        if file not in parent.get_req_files():
+            parent.add_req_file(file)
 
         for node in node['dependencies']['nodes']:
-            if node['repository'] != None and node['packageManager'] == parent.pkg_manager:
+            if node['repository'] != None and node['packageManager'] == parent.get_pkg_manager():
                 package_manager = node['packageManager']
                 has_dependencies = node['hasDependencies']
                 name_with_owner = node['repository']['nameWithOwner']

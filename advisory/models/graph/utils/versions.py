@@ -64,11 +64,11 @@ def get_versions(pkg_name: str, relationhip, pkg_manager: str) -> list[str]:
         for version in all_versions:
             release = version['release']
             checkers = list()
-            for constraint in relationhip.constraints:
-                if constraint.signature.__contains__('Any'):
+            for constraint in relationhip.get_constraints():
+                if constraint.get_signature().__contains__('Any'):
                     continue
 
-                parts = constraint.signature.split(' ')
+                parts = constraint.get_signature().split(' ')
                 if parts[0] == '~>':
                     checkers.append(approx_gt(release, parts[1]))
                 elif parts[0] == '^':

@@ -6,10 +6,10 @@ from advisory.objects import CVE, CVSS, Package
 def add_cves(package: 'Package') -> None:
     cves = list()
 
-    if package.pkg_manager == 'COMPOSER':
-        pkg_name = package.pkg_name.split('/')[1]
+    if package.get_pkg_manager() == 'COMPOSER':
+        pkg_name = package.get_pkg_name().split('/')[1]
     else:
-        pkg_name = package.pkg_name
+        pkg_name = package.get_pkg_name()
 
     cves = get_cves(pkg_name)
     for cve in cves:
@@ -27,27 +27,32 @@ def add_cves(package: 'Package') -> None:
         try:
             cvss = get_cvss(cve.impact.baseMetricV3)
         except:
-            cvss = CVSS('None', None, None, None, None, None, None, None)
+            cvss = CVSS('None', None, None, None, None, None, None, None, None, None, None, None, None)
 
         new_cve = CVE(id, 'nvd', description, cpes, cvss)
 
         if package.get_cve(id) == None:
-            for parent in package.versions:
-                for version in package.versions[parent]:
+            for parent in package.get_versions():
+                for version in package.get_versions()[parent]:
                     have_version = False
                     for cpe in cpes:
-                        if cpe.__contains__(version.ver_name):
+                        if cpe.__contains__(version.get_ver_name()):
                             have_version = True
                     if have_version:
-                        version.cves.append(new_cve)
-            package.cves.append(new_cve)
+                        version.add_cve(new_cve)
+            package.add_cve(new_cve)
 
 def get_cvss(baseMetricV3: dict) -> 'CVSS':
     cvss3 = CVSS(
         baseMetricV3.cvssV3.vectorString,
         baseMetricV3.cvssV3.attackVector,
         baseMetricV3.cvssV3.attackComplexity,
+        baseMetricV3.cvssV3.privilegesRequired,
+        baseMetricV3.cvssV3.userInteraction,
+        baseMetricV3.cvssV3.scope,
+        baseMetricV3.cvssV3.confidentialityImpact,
         baseMetricV3.cvssV3.integrityImpact,
+        baseMetricV3.cvssV3.availabilityImpact,
         baseMetricV3.cvssV3.baseScore,
         baseMetricV3.cvssV3.baseSeverity,
         baseMetricV3.exploitabilityScore,

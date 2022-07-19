@@ -5,4 +5,7 @@ class Constraint:
         signature: str
         ) -> None:
 
-        self.signature = signature
+        self.__signature: str = signature
+
+    def get_signature(self) -> int:
+        return self.__signature

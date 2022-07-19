@@ -1,5 +1,6 @@
 from advisory.models.graph.apis.git.dependencies import get_dependencies
 from advisory.models.graph.utils.parse_constraints import parse_constraints
+from advisory.models.graph.utils.add_cves import add_cves
 
 from advisory.models import Graph
 
@@ -19,7 +20,7 @@ class BuildGraph(Transformation):
         parent: 'Package'
     ) -> None:
 
-        if parent.level >= self.__total_level:
+        if parent.get_level() >= self.__total_level:
             return ''
 
         dependencies = get_dependencies(parent)
@@ -36,11 +37,11 @@ class BuildGraph(Transformation):
             new_relationship = self.build_relationship(parent, constraints)
 
             if not package:
-                package = self.build_package(pkg_name, parent.level, dependencies, new_relationship)
+                package = self.build_package(pkg_name, parent.get_level(), dependencies, new_relationship)
                 
                 are_void = False
-                for version in package.versions:
-                    if not package.versions[version]:
+                for version in package.get_versions():
+                    if not package.get_versions()[version]:
                         are_void = True
                         break
 
@@ -54,9 +55,9 @@ class BuildGraph(Transformation):
 
             new_packages.append(package)
 
-            new_relationship.child = package
+            new_relationship.add_child(package)
 
-            parent.child_relationhips.append(new_relationship)
+            parent.add_child_relationship(new_relationship)
 
         for package in new_packages:
             self.transform(package)
@@ -93,3 +94,8 @@ class BuildGraph(Transformation):
             )
 
         return rel
+
+    def attribute(self):
+        for package in self.__source_model.get_packages():
+            if package.get_versions():
+                add_cves(package)

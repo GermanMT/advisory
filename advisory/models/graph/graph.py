@@ -64,19 +64,19 @@ class Graph(VariabilityModel):
 
     def get_package(self, pkg_name: str) -> 'Package':
         for package in self.__packages:
-            if package.pkg_name == pkg_name:
+            if package.get_pkg_name() == pkg_name:
                 return package
 
     def __repr__(self) -> str:
-        model_str = f'Root: {self.__root.pkg_name} \n'
+        model_str = f'Root: {self.__root.get_pkg_name()} \n'
 
         model_str += '\n'
 
         model_str += 'Packages: \n'
         i = 0
         for pkg in self.__packages:
-            versions = [{parent: str(pkg.versions[parent]) + ' -> ' +str(len(pkg.versions[parent]))} for parent in pkg.versions]
-            model_str += f'Package{i}: {pkg.pkg_name}: {versions} \n'
+            versions = [{parent: str(pkg.get_versions()[parent]) + ' -> ' +str(len(pkg.get_versions()[parent]))} for parent in pkg.get_versions()]
+            model_str += f'Package{i}: {pkg.get_pkg_name()}: {versions} \n'
             i += 1
 
         model_str += '\n'
@@ -84,7 +84,7 @@ class Graph(VariabilityModel):
         model_str += 'Relationships: \n'
         i = 0
         for rel in self.__relationships:
-            model_str += f'Relationship{i}: {rel.parent.pkg_name} -> {rel.child.pkg_name} \n'
+            model_str += f'Relationship{i}: {rel.get_parent().get_pkg_name()} -> {rel.get_child().get_pkg_name()} \n'
             i += 1
 
         model_str += '\n'
@@ -92,8 +92,8 @@ class Graph(VariabilityModel):
         model_str += 'Constraints: \n'
         i = 0
         for rel in self.__relationships:
-            for const in rel.constraints:
-                model_str += f'Constraint{i}: {rel.child.pkg_name} {const.signature} \n'
+            for const in rel.get_constraints():
+                model_str += f'Constraint{i}: {rel.get_child().get_pkg_name()} {const.get_signature()} \n'
                 i += 1
 
         return model_str
